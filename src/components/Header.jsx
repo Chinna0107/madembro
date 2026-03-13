@@ -71,11 +71,10 @@ const Header = () => {
       position: "sticky",
       top: 0,
       zIndex: 1000,
-      background: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)",
-      borderBottom: "2px solid #d4af37",
+      background: "#000",
+      borderBottom: "1px solid #1a1a1a",
       fontFamily: "Arial, sans-serif",
-      color: "white",
-      boxShadow: "0 4px 20px rgba(212, 175, 55, 0.15)"
+      color: "#fff"
     },
 
     promoBar: {
@@ -124,7 +123,7 @@ const Header = () => {
     brandName: {
       fontWeight: "700",
       fontSize: isMobile ? "18px" : "22px",
-      color: "#d4af37",
+      color: "#fff",
       letterSpacing: "1px"
     },
 
@@ -143,7 +142,7 @@ const Header = () => {
 
     navLink: {
       textDecoration: "none",
-      color: "#ccc",
+      color: "#fff",
       fontSize: "15px",
       fontWeight: "600",
       letterSpacing: "0.5px",
@@ -201,7 +200,7 @@ const Header = () => {
       position: "absolute",
       top: "-8px",
       right: "-8px",
-      background: "#d4af37",
+      background: "#fff",
       color: "#000",
       borderRadius: "50%",
       width: "22px",
@@ -356,40 +355,40 @@ const Header = () => {
           <a 
             href="/" 
             style={styles.navLink}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
+            onMouseEnter={(e) => e.target.style.color = "#ccc"}
+            onMouseLeave={(e) => e.target.style.color = "#fff"}
           >
             Home
           </a>
           <a 
             href="/tshirts" 
             style={styles.navLink}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
+            onMouseEnter={(e) => e.target.style.color = "#ccc"}
+            onMouseLeave={(e) => e.target.style.color = "#fff"}
           >
             T-Shirts
           </a>
           <a 
             href="/sweatshirts" 
             style={styles.navLink}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
+            onMouseEnter={(e) => e.target.style.color = "#ccc"}
+            onMouseLeave={(e) => e.target.style.color = "#fff"}
           >
             Sweatshirts
           </a>
           <a 
             href="/hoodies" 
             style={styles.navLink}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
+            onMouseEnter={(e) => e.target.style.color = "#ccc"}
+            onMouseLeave={(e) => e.target.style.color = "#fff"}
           >
             Hoodies
           </a>
           <a 
             href="/custom-embroidery" 
             style={styles.navLink}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
+            onMouseEnter={(e) => e.target.style.color = "#ccc"}
+            onMouseLeave={(e) => e.target.style.color = "#fff"}
           >
             Custom
           </a>
@@ -398,7 +397,7 @@ const Header = () => {
         <div style={styles.actions}>
           <div style={styles.search}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#d4af37";
+              e.currentTarget.style.borderColor = "#ececea";
               e.currentTarget.style.background = "#1a1a1a";
             }}
             onMouseLeave={(e) => {
@@ -418,7 +417,7 @@ const Header = () => {
             <button 
               style={styles.iconBtn}
               onMouseEnter={(e) => {
-                e.target.style.borderColor = "#d4af37";
+                e.target.style.borderColor = "#e7e4db";
                 e.target.style.background = "#1a1a1a";
               }}
               onMouseLeave={(e) => {
@@ -431,7 +430,7 @@ const Header = () => {
             </button>
           </a>
 
-          {isLoggedIn ? (
+          {/* {isLoggedIn ? (
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <span style={{ fontSize: "14px", color: "#d4af37", fontWeight: "600" }}>
                 👤 {userName}
@@ -466,7 +465,7 @@ const Header = () => {
             >
               👤 Login
             </button>
-          )}
+          )} */}
         </div>
 
         <button 
@@ -475,12 +474,12 @@ const Header = () => {
           onClick={toggleMenu}
           onMouseEnter={(e) => {
             e.currentTarget.querySelectorAll('span').forEach(line => {
-              line.style.background = "#d4af37";
+              line.style.background = "#eeece5";
             });
           }}
           onMouseLeave={(e) => {
             e.currentTarget.querySelectorAll('span').forEach(line => {
-              line.style.background = "#d4af37";
+              line.style.background = "#e9e7de";
             });
           }}
         >
@@ -495,11 +494,11 @@ const Header = () => {
           style={styles.closeBtn}
           onClick={closeMenu}
           onMouseEnter={(e) => {
-            e.target.style.color = "#e6c200";
+            e.target.style.color = "#edead8";
             e.target.style.transform = "scale(1.2)";
           }}
           onMouseLeave={(e) => {
-            e.target.style.color = "#d4af37";
+            e.target.style.color = "#ebe9e2";
             e.target.style.transform = "scale(1)";
           }}
         >
@@ -512,8 +511,8 @@ const Header = () => {
             style={styles.mobileLink}
             onClick={closeMenu}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#d4af37";
-              e.target.style.color = "#000";
+              e.target.style.backgroundColor = "#222";
+              e.target.style.color = "#fff";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
@@ -527,8 +526,8 @@ const Header = () => {
             style={styles.mobileLink}
             onClick={closeMenu}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#d4af37";
-              e.target.style.color = "#000";
+              e.target.style.backgroundColor = "#222";
+              e.target.style.color = "#fff";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
@@ -542,8 +541,8 @@ const Header = () => {
             style={styles.mobileLink}
             onClick={closeMenu}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#d4af37";
-              e.target.style.color = "#000";
+              e.target.style.backgroundColor = "#222";
+              e.target.style.color = "#fff";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
@@ -557,8 +556,8 @@ const Header = () => {
             style={styles.mobileLink}
             onClick={closeMenu}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#d4af37";
-              e.target.style.color = "#000";
+              e.target.style.backgroundColor = "#222";
+              e.target.style.color = "#fff";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
@@ -572,8 +571,8 @@ const Header = () => {
             style={styles.mobileLink}
             onClick={closeMenu}
             onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#d4af37";
-              e.target.style.color = "#000";
+              e.target.style.backgroundColor = "#222";
+              e.target.style.color = "#fff";
             }}
             onMouseLeave={(e) => {
               e.target.style.backgroundColor = "transparent";
@@ -592,7 +591,7 @@ const Header = () => {
           </a>
         </div>
 
-        {isLoggedIn ? (
+        {/* {isLoggedIn ? (
           <button
             onClick={() => {
               handleLogout();
@@ -612,7 +611,7 @@ const Header = () => {
           >
             Login
           </button>
-        )}
+        )} */}
       </div>
     </header>
   );

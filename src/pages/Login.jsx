@@ -43,7 +43,7 @@ const Login = () => {
     
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
 
@@ -81,10 +81,8 @@ const Login = () => {
     setLoading(true);
     setMessage('');
 
-    // Simulate API call
     setTimeout(() => {
       if (isLogin) {
-        // Login
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userName', formData.email.split('@')[0]);
         setMessage('Login successful! Redirecting...');
@@ -93,7 +91,6 @@ const Login = () => {
           window.location.reload();
         }, 1500);
       } else {
-        // Sign up
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userName', formData.firstName);
         setMessage('Account created successfully! Redirecting...');
@@ -106,98 +103,40 @@ const Login = () => {
     }, 1000);
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '14px',
-    backgroundColor: '#0a0a0a',
-    border: '2px solid #333',
-    borderRadius: '8px',
-    color: '#fff',
-    fontSize: '15px',
-    fontFamily: 'inherit',
-    boxSizing: 'border-box',
-    transition: 'all 0.3s ease'
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '8px',
-    color: '#d4af37',
-    fontSize: '14px',
-    fontWeight: '600',
-    letterSpacing: '0.5px'
-  };
-
-  const errorStyle = {
-    color: '#ff6b6b',
-    fontSize: '12px',
-    marginTop: '4px',
-    fontWeight: '500'
-  };
-
-  const buttonStyle = {
-    width: '100%',
-    padding: '14px',
-    backgroundColor: '#d4af37',
-    color: '#000',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    letterSpacing: '0.5px'
-  };
-
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 'clamp(20px, 5vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ maxWidth: '900px', width: '100%', margin: '0 auto' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-          gap: isMobile ? '0' : '40px',
-          backgroundColor: '#1a1a1a',
-          borderRadius: '16px',
-          overflow: 'hidden',
-          border: '1px solid #333',
-          boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)'
-        }}>
+    <div className="bg-black min-h-screen p-4 md:p-8 flex items-center justify-center">
+      <div className="max-w-4xl w-full">
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-0 bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-2xl`}>
+          
           {/* Left Side - Branding */}
           {!isMobile && (
-            <div style={{
-              background: 'linear-gradient(135deg, #d4af37 0%, #e6c200 100%)',
-              padding: '60px 40px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              color: '#000'
-            }}>
-              <h1 style={{ fontSize: '32px', fontWeight: '700', margin: '0 0 20px 0', letterSpacing: '1px' }}>
+            <div className="bg-white text-black p-12 flex flex-col justify-center">
+              <h1 className="text-4xl font-bold mb-6 tracking-wider">
                 MADEMBRO
               </h1>
-              <p style={{ fontSize: '16px', margin: '0 0 30px 0', lineHeight: '1.6', fontWeight: '500' }}>
+              <p className="text-base mb-8 leading-relaxed font-medium">
                 Welcome to our custom embroidery studio. Create unique, personalized apparel with our premium embroidery services.
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: '24px' }}>✓</span>
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-3 items-start">
+                  <span className="text-2xl">✓</span>
                   <div>
-                    <p style={{ margin: '0 0 4px 0', fontWeight: '600' }}>Premium Quality</p>
-                    <p style={{ margin: 0, fontSize: '14px', opacity: 0.8 }}>High-quality embroidery on all products</p>
+                    <p className="font-bold mb-1">Premium Quality</p>
+                    <p className="text-sm opacity-80">High-quality embroidery on all products</p>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: '24px' }}>✓</span>
+                <div className="flex gap-3 items-start">
+                  <span className="text-2xl">✓</span>
                   <div>
-                    <p style={{ margin: '0 0 4px 0', fontWeight: '600' }}>Custom Designs</p>
-                    <p style={{ margin: 0, fontSize: '14px', opacity: 0.8 }}>Personalize your apparel with custom designs</p>
+                    <p className="font-bold mb-1">Custom Designs</p>
+                    <p className="text-sm opacity-80">Personalize your apparel with custom designs</p>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: '24px' }}>✓</span>
+                <div className="flex gap-3 items-start">
+                  <span className="text-2xl">✓</span>
                   <div>
-                    <p style={{ margin: '0 0 4px 0', fontWeight: '600' }}>Fast Shipping</p>
-                    <p style={{ margin: 0, fontSize: '14px', opacity: 0.8 }}>Quick delivery to your doorstep</p>
+                    <p className="font-bold mb-1">Fast Shipping</p>
+                    <p className="text-sm opacity-80">Quick delivery to your doorstep</p>
                   </div>
                 </div>
               </div>
@@ -205,169 +144,110 @@ const Login = () => {
           )}
 
           {/* Right Side - Form */}
-          <div style={{ padding: isMobile ? '40px 24px' : '60px 40px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <h2 style={{ fontSize: 'clamp(24px, 5vw, 28px)', fontWeight: '700', color: '#d4af37', marginBottom: '10px', margin: 0, marginBottom: '10px', letterSpacing: '0.5px' }}>
+          <div className={`p-8 md:p-12 flex flex-col justify-center ${isMobile ? 'col-span-1' : ''}`}>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h2>
-            <p style={{ fontSize: '14px', color: '#aaa', marginBottom: '30px', margin: 0, marginBottom: '30px' }}>
+            <p className="text-gray-400 mb-8 text-sm md:text-base">
               {isLogin ? 'Sign in to your account' : 'Join our community'}
             </p>
 
             {message && (
-              <div style={{
-                padding: '12px 16px',
-                backgroundColor: message.includes('successful') ? '#0a3d0a' : '#3d0a0a',
-                border: `1px solid ${message.includes('successful') ? '#22c55e' : '#ff6b6b'}`,
-                borderRadius: '8px',
-                color: message.includes('successful') ? '#22c55e' : '#ff6b6b',
-                marginBottom: '20px',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}>
+              <div className={`p-3 md:p-4 rounded-lg mb-6 text-sm font-medium ${
+                message.includes('successful') 
+                  ? 'bg-green-900 border border-green-600 text-green-400' 
+                  : 'bg-red-900 border border-red-600 text-red-400'
+              }`}>
                 {message}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
               {!isLogin && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label style={labelStyle}>First Name</label>
+                    <label className="block mb-2 text-white font-bold text-sm">First Name</label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      style={inputStyle}
+                      className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
                       placeholder="John"
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#d4af37';
-                        e.target.style.backgroundColor = '#1a1a1a';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#333';
-                        e.target.style.backgroundColor = '#0a0a0a';
-                      }}
                     />
-                    {errors.firstName && <div style={errorStyle}>{errors.firstName}</div>}
+                    {errors.firstName && <div className="text-red-500 text-xs mt-1">{errors.firstName}</div>}
                   </div>
                   <div>
-                    <label style={labelStyle}>Last Name</label>
+                    <label className="block mb-2 text-white font-bold text-sm">Last Name</label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      style={inputStyle}
+                      className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
                       placeholder="Doe"
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#d4af37';
-                        e.target.style.backgroundColor = '#1a1a1a';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#333';
-                        e.target.style.backgroundColor = '#0a0a0a';
-                      }}
                     />
-                    {errors.lastName && <div style={errorStyle}>{errors.lastName}</div>}
+                    {errors.lastName && <div className="text-red-500 text-xs mt-1">{errors.lastName}</div>}
                   </div>
                 </div>
               )}
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Email Address</label>
+              <div className="mb-4">
+                <label className="block mb-2 text-white font-bold text-sm">Email Address</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
                   placeholder="you@example.com"
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#d4af37';
-                    e.target.style.backgroundColor = '#1a1a1a';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#333';
-                    e.target.style.backgroundColor = '#0a0a0a';
-                  }}
                 />
-                {errors.email && <div style={errorStyle}>{errors.email}</div>}
+                {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Password</label>
+              <div className="mb-4">
+                <label className="block mb-2 text-white font-bold text-sm">Password</label>
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
                   placeholder="••••••••"
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#d4af37';
-                    e.target.style.backgroundColor = '#1a1a1a';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#333';
-                    e.target.style.backgroundColor = '#0a0a0a';
-                  }}
                 />
-                {errors.password && <div style={errorStyle}>{errors.password}</div>}
+                {errors.password && <div className="text-red-500 text-xs mt-1">{errors.password}</div>}
               </div>
 
               {!isLogin && (
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={labelStyle}>Confirm Password</label>
+                <div className="mb-6">
+                  <label className="block mb-2 text-white font-bold text-sm">Confirm Password</label>
                   <input
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
                     placeholder="••••••••"
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#d4af37';
-                      e.target.style.backgroundColor = '#1a1a1a';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#333';
-                      e.target.style.backgroundColor = '#0a0a0a';
-                    }}
                   />
-                  {errors.confirmPassword && <div style={errorStyle}>{errors.confirmPassword}</div>}
+                  {errors.confirmPassword && <div className="text-red-500 text-xs mt-1">{errors.confirmPassword}</div>}
                 </div>
               )}
 
               <button
                 type="submit"
                 disabled={loading}
-                style={{
-                  ...buttonStyle,
-                  opacity: loading ? 0.7 : 1,
-                  cursor: loading ? 'not-allowed' : 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) {
-                    e.target.style.backgroundColor = '#e6c200';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.3)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!loading) {
-                    e.target.style.backgroundColor = '#d4af37';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }
-                }}
+                className={`w-full py-3 md:py-4 rounded-lg font-bold text-base transition-all duration-300 ${
+                  loading 
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                    : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-1'
+                }`}
               >
                 {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
               </button>
             </form>
 
-            <div style={{ marginTop: '25px', textAlign: 'center', borderTop: '1px solid #333', paddingTop: '25px' }}>
-              <p style={{ fontSize: '14px', color: '#aaa', margin: 0, marginBottom: '12px' }}>
+            <div className="mt-8 text-center border-t border-gray-700 pt-8">
+              <p className="text-gray-400 mb-4 text-sm">
                 {isLogin ? "Don't have an account?" : 'Already have an account?'}
               </p>
               <button
@@ -377,26 +257,7 @@ const Login = () => {
                   setErrors({});
                   setMessage('');
                 }}
-                style={{
-                  background: 'transparent',
-                  border: '2px solid #d4af37',
-                  color: '#d4af37',
-                  padding: '10px 24px',
-                  borderRadius: '25px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  transition: 'all 0.3s ease',
-                  letterSpacing: '0.5px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#d4af37';
-                  e.target.style.color = '#000';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'transparent';
-                  e.target.style.color = '#d4af37';
-                }}
+                className="border-2 border-white text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-white hover:text-black transition-all duration-300"
               >
                 {isLogin ? 'Sign Up' : 'Sign In'}
               </button>
@@ -404,18 +265,7 @@ const Login = () => {
 
             <button
               onClick={() => navigate('/')}
-              style={{
-                marginTop: '20px',
-                background: 'transparent',
-                border: 'none',
-                color: '#aaa',
-                cursor: 'pointer',
-                fontSize: '14px',
-                textDecoration: 'underline',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => e.target.style.color = '#d4af37'}
-              onMouseLeave={(e) => e.target.style.color = '#aaa'}
+              className="mt-6 text-gray-400 hover:text-white text-sm underline transition-colors"
             >
               ← Back to Home
             </button>

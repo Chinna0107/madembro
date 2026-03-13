@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import { useCart } from '../context/CartContext';
 import 'slick-carousel/slick/slick.css';
@@ -8,36 +8,64 @@ import 'slick-carousel/slick/slick-theme.css';
 function Products() {
   const { name } = useParams();
   const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedColor, setSelectedColor] = useState('Black');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [activeTab, setActiveTab] = useState('description');
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const sliderRef = useRef(null);
   const { addToCart } = useCart();
 
   const productsData = {
-    'classic-logo-tshirt': { name: 'Classic Logo T-Shirt', price: 29.99, description: 'Premium quality t-shirt with classic logo embroidery. Made from 100% cotton for ultimate comfort and durability. Perfect for everyday wear with a timeless design.', rating: 4.5, reviews: 128, features: ['100% Cotton', 'Classic Logo Embroidery', 'Machine Washable', 'Unisex Fit', 'Breathable Fabric'] },
-    'vintage-print-tshirt': { name: 'Vintage Print T-Shirt', price: 34.99, description: 'Stylish vintage print t-shirt featuring retro-inspired embroidery design. Crafted from premium cotton blend for a soft, comfortable feel. Great for casual outings and vintage enthusiasts.', rating: 4.3, reviews: 95, features: ['Cotton Blend', 'Vintage Print Design', 'Soft Touch', 'Fade Resistant', 'Comfortable Fit'] },
-    'embroidered-rose-tshirt': { name: 'Embroidered Rose T-Shirt', price: 39.99, description: 'Beautiful rose embroidery on premium cotton t-shirt. Hand-crafted design with intricate details. Perfect for those who appreciate elegant and artistic clothing.', rating: 4.7, reviews: 112, features: ['100% Premium Cotton', 'Hand-Crafted Rose Design', 'Intricate Embroidery', 'Elegant Style', 'Durable Stitching'] },
-    'signature-embroidered-tee': { name: 'Signature Embroidered Tee', price: 34.99, description: 'Our signature embroidered t-shirt featuring our iconic design. Made from high-quality cotton with professional embroidery work. A bestseller among our customers.', rating: 4.6, reviews: 189, features: ['100% Cotton', 'Signature Design', 'Professional Embroidery', 'Best Seller', 'Premium Quality'] },
-    'custom-name-tshirt': { name: 'Custom Name T-Shirt', price: 44.99, description: 'Personalize your t-shirt with your own name or text. Premium cotton construction with custom embroidery. Perfect gift for friends and family.', rating: 4.4, reviews: 76, features: ['100% Cotton', 'Custom Name Embroidery', 'Personalized', 'Gift Ready', 'Multiple Colors'] },
-    'premium-cotton-tshirt': { name: 'Premium Cotton T-Shirt', price: 32.99, description: 'Ultra-soft premium cotton t-shirt with minimalist embroidery. Designed for maximum comfort and longevity. Ideal for everyday wear.', rating: 4.5, reviews: 103, features: ['Premium Cotton', 'Minimalist Design', 'Ultra Soft', 'Long Lasting', 'Eco-Friendly'] },
-    'classic-sweatshirt': { name: 'Classic Sweatshirt', price: 49.99, description: 'Comfortable classic sweatshirt with embroidery options. Made from soft fleece blend for warmth and comfort. Perfect for casual wear and layering.', rating: 4.4, reviews: 87, features: ['Fleece Blend', 'Classic Design', 'Warm & Cozy', 'Embroidery Ready', 'Durable'] },
-    'premium-sweatshirt': { name: 'Premium Sweatshirt', price: 49.99, description: 'High-quality premium sweatshirt with custom embroidery. Crafted from premium fleece for superior comfort. Great for layering or standalone wear.', rating: 4.6, reviews: 105, features: ['Premium Fleece', 'Custom Embroidery', 'Superior Comfort', 'Warm Lining', 'Professional Quality'] },
-    'vintage-sweatshirt': { name: 'Vintage Sweatshirt', price: 44.99, description: 'Retro-inspired vintage sweatshirt with classic embroidery. Soft fleece construction with vintage aesthetic. Perfect for a nostalgic, comfortable look.', rating: 4.3, reviews: 68, features: ['Fleece Material', 'Vintage Style', 'Retro Design', 'Comfortable Fit', 'Timeless Appeal'] },
-    'embroidered-logo-sweatshirt': { name: 'Embroidered Logo Sweatshirt', price: 54.99, description: 'Premium sweatshirt featuring embroidered logo design. Made from high-quality fleece with professional embroidery work. Ideal for branding and personal style.', rating: 4.5, reviews: 92, features: ['Premium Fleece', 'Logo Embroidery', 'Professional Work', 'Branded Style', 'Quality Construction'] },
-    'custom-name-sweatshirt': { name: 'Custom Name Sweatshirt', price: 59.99, description: 'Personalized sweatshirt with custom name embroidery. Premium fleece construction for comfort and durability. Perfect personalized gift.', rating: 4.7, reviews: 114, features: ['Premium Fleece', 'Custom Name', 'Personalized', 'Gift Perfect', 'Durable Stitching'] },
-    'oversized-sweatshirt': { name: 'Oversized Sweatshirt', price: 52.99, description: 'Trendy oversized sweatshirt with comfortable fit. Made from soft fleece with embroidery options. Perfect for a relaxed, modern look.', rating: 4.4, reviews: 81, features: ['Fleece Material', 'Oversized Fit', 'Trendy Style', 'Comfortable', 'Modern Design'] },
-    'classic-black-hoodie': { name: 'Classic Black Hoodie', price: 54.99, description: 'Premium black hoodie with custom embroidery design. Made from 100% cotton for maximum comfort and durability. Versatile piece for any wardrobe.', rating: 4.5, reviews: 142, features: ['100% Cotton', 'Custom Embroidery', 'Machine Washable', 'Unisex Fit', 'Premium Quality'] },
-    'embroidered-rose-hoodie': { name: 'Embroidered Rose Hoodie', price: 59.99, description: 'Premium quality hoodie with beautiful rose embroidery design. Made from 100% cotton for maximum comfort. Perfect for those who love elegant designs.', rating: 4.5, reviews: 128, features: ['100% Cotton', 'Rose Embroidery', 'Machine Washable', 'Unisex Fit', 'Premium Quality'] },
-    'premium-hoodie': { name: 'Premium Hoodie', price: 64.99, description: 'High-quality premium hoodie with superior construction. Made from premium cotton blend with custom embroidery options. Ideal for comfort and style.', rating: 4.6, reviews: 135, features: ['Premium Cotton Blend', 'Superior Construction', 'Custom Embroidery', 'Comfortable Fit', 'Durable'] },
-    'custom-name-hoodie': { name: 'Custom Name Hoodie', price: 64.99, description: 'Personalized hoodie with custom name embroidery. Premium cotton construction for comfort and longevity. Perfect personalized gift for anyone.', rating: 4.7, reviews: 156, features: ['Premium Cotton', 'Custom Name', 'Personalized', 'Gift Ready', 'Professional Embroidery'] },
-    'embroidered-logo-hoodie': { name: 'Embroidered Logo Hoodie', price: 59.99, description: 'Premium hoodie featuring embroidered logo design. Made from high-quality cotton with professional embroidery. Great for branding and personal style.', rating: 4.6, reviews: 118, features: ['Premium Cotton', 'Logo Embroidery', 'Professional Work', 'Branded Style', 'Quality Construction'] },
-    'vintage-hoodie': { name: 'Vintage Hoodie', price: 54.99, description: 'Retro-inspired vintage hoodie with classic embroidery. Soft cotton construction with vintage aesthetic. Perfect for a nostalgic, comfortable look.', rating: 4.4, reviews: 97, features: ['Cotton Material', 'Vintage Style', 'Retro Design', 'Comfortable Fit', 'Timeless Appeal'] },
-    'custom-logo-design': { name: 'Custom Logo Design', price: 69.99, description: 'Create your own custom logo embroidery on any garment. Professional embroidery service with unlimited design possibilities. Perfect for businesses and personal branding.', rating: 4.8, reviews: 156, features: ['Custom Design', 'Professional Embroidery', 'Any Garment', 'Unlimited Options', 'Business Ready'] },
-    'personalized-name-embroidery': { name: 'Personalized Name Embroidery', price: 59.99, description: 'Add personalized name embroidery to any garment. Professional embroidery service with high-quality stitching. Perfect for gifts and personal items.', rating: 4.7, reviews: 142, features: ['Custom Name', 'Professional Embroidery', 'High Quality', 'Gift Perfect', 'Durable Stitching'] },
-    'custom-team-embroidery': { name: 'Custom Team Embroidery', price: 74.99, description: 'Custom team embroidery for sports teams and groups. Professional embroidery with team logos and names. Perfect for team uniforms and group events.', rating: 4.6, reviews: 89, features: ['Team Logos', 'Professional Embroidery', 'Group Ready', 'Uniform Quality', 'Bulk Options'] },
-    'monogram-embroidery': { name: 'Monogram Embroidery', price: 54.99, description: 'Elegant monogram embroidery on premium garments. Professional embroidery service with classic designs. Perfect for personalized gifts and special occasions.', rating: 4.5, reviews: 76, features: ['Monogram Design', 'Professional Embroidery', 'Elegant Style', 'Premium Quality', 'Gift Ready'] },
-    'custom-design-hoodie': { name: 'Custom Design Hoodie', price: 79.99, description: 'Premium hoodie with fully custom design embroidery. Professional embroidery service with unlimited customization. Perfect for unique personal style.', rating: 4.7, reviews: 124, features: ['Custom Design', 'Premium Hoodie', 'Professional Embroidery', 'Unlimited Options', 'Unique Style'] },
-    'corporate-embroidery': { name: 'Corporate Embroidery', price: 84.99, description: 'Professional corporate embroidery service for businesses. Custom logo and branding embroidery on premium garments. Perfect for corporate gifts and uniforms.', rating: 4.8, reviews: 167, features: ['Corporate Logos', 'Professional Service', 'Premium Garments', 'Bulk Ready', 'Business Quality'] }
+    'classic-logo-tshirt': { 
+      name: 'Classic Logo T-Shirt', 
+      price: 29.99, 
+      originalPrice: 39.99,
+      description: 'Premium quality t-shirt with classic logo embroidery. Made from 100% cotton for ultimate comfort and durability. Perfect for everyday wear with a timeless design.', 
+      rating: 4.5, 
+      reviews: 128, 
+      inStock: 45,
+      sku: 'CLT-001',
+      features: ['100% Cotton', 'Classic Logo Embroidery', 'Machine Washable', 'Unisex Fit', 'Breathable Fabric'],
+      specifications: {
+        'Material': '100% Premium Cotton',
+        'Weight': '180 GSM',
+        'Care': 'Machine wash cold, tumble dry low',
+        'Fit': 'Unisex Regular Fit',
+        'Embroidery': 'Front chest logo'
+      },
+      colors: ['Black', 'White', 'Navy', 'Gray'],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      shipping: 'Free shipping on orders over $100',
+      returns: '30-day hassle-free returns',
+      warranty: '1-year quality guarantee'
+    },
+    'embroidered-rose-hoodie': { 
+      name: 'Embroidered Rose Hoodie', 
+      price: 59.99, 
+      originalPrice: 79.99,
+      description: 'Premium quality hoodie with beautiful rose embroidery design. Made from 100% cotton for maximum comfort. Perfect for those who love elegant designs.', 
+      rating: 4.5, 
+      reviews: 128, 
+      inStock: 32,
+      sku: 'ERH-001',
+      features: ['100% Cotton', 'Rose Embroidery', 'Machine Washable', 'Unisex Fit', 'Premium Quality'],
+      specifications: {
+        'Material': '100% Premium Cotton',
+        'Weight': '280 GSM',
+        'Care': 'Machine wash cold, tumble dry low',
+        'Fit': 'Unisex Regular Fit',
+        'Embroidery': 'Front chest rose design'
+      },
+      colors: ['Black', 'White', 'Burgundy'],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      shipping: 'Free shipping on orders over $100',
+      returns: '30-day hassle-free returns',
+      warranty: '1-year quality guarantee'
+    },
   };
 
   const productData = productsData[name] || productsData['embroidered-rose-hoodie'];
@@ -46,16 +74,26 @@ function Products() {
     id: name,
     name: productData.name,
     price: productData.price,
+    originalPrice: productData.originalPrice,
+    discount: Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100),
     images: [
-      'https://images.unsplash.com/photo-1556821552-7f41c5d440db?w=500&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1556821552-5f63b1c2c723?w=500&h=600&fit=crop'
+      'https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvb2RpZXxlbnwwfHwwfHx8MA%3D%3D',
+      'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160',
+      'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160',
+      'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160'
     ],
     description: productData.description,
-    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    sizes: productData.sizes,
+    colors: productData.colors,
     rating: productData.rating,
     reviews: productData.reviews,
-    features: productData.features
+    inStock: productData.inStock,
+    sku: productData.sku,
+    features: productData.features,
+    specifications: productData.specifications,
+    shipping: productData.shipping,
+    returns: productData.returns,
+    warranty: productData.warranty
   };
 
   const handleAddToCart = () => {
@@ -65,10 +103,18 @@ function Products() {
       price: product.price,
       size: selectedSize,
       quantity: quantity,
-      image: product.images[0]
+      image: product.images[0],
+      color: selectedColor
     });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x, y });
   };
 
   const sliderSettings = {
@@ -77,280 +123,409 @@ function Products() {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
-    prevArrow: <CustomPrevArrow />,
-    nextArrow: <CustomNextArrow />
+    arrows: false,
+    beforeChange: (current, next) => setCurrentImageIndex(next)
   };
 
+  const relatedProducts = [
+    { id: 'classic-logo-tshirt', name: 'Classic Logo T-Shirt', price: 29.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.5 },
+    { id: 'premium-hoodie', name: 'Premium Hoodie', price: 64.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.6 },
+    { id: 'custom-name-sweatshirt', name: 'Custom Name Sweatshirt', price: 59.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.7 },
+  ];
+
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 'clamp(20px, 5vw, 40px)' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(30px, 5vw, 60px)', backgroundColor: '#1a1a1a', padding: 'clamp(20px, 5vw, 40px)', borderRadius: '16px', boxShadow: '0 8px 24px rgba(212, 175, 55, 0.1)' }}>
+    <div className="bg-black min-h-screen p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 mb-8 text-sm text-gray-400">
+          <Link to="/" className="hover:text-white transition-colors">Home</Link>
+          <span>/</span>
+          <Link to="/products" className="hover:text-white transition-colors">Products</Link>
+          <span>/</span>
+          <span className="text-white">{product.name}</span>
+        </div>
+
+        {/* Main Product Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12">
           
-          {/* Product Images Carousel */}
-          <div style={{ position: 'relative' }}>
-            <Slider ref={sliderRef} {...sliderSettings}>
-              {product.images.map((img, idx) => (
-                <div key={idx} style={{ borderRadius: '16px', overflow: 'hidden' }}>
-                  <img 
-                    src={img} 
-                    alt={`${product.name} ${idx + 1}`} 
-                    style={{ 
-                      width: '100%', 
-                      height: 'auto',
-                      display: 'block',
-                      borderRadius: '16px',
-                      border: '2px solid #333'
-                    }} 
-                  />
+          {/* Product Images Section */}
+          <div className="space-y-4">
+            {/* Main Image with Zoom */}
+            <div 
+              className="relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800 h-96 md:h-[600px] cursor-zoom-in"
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setZoomLevel(1.5)}
+              onMouseLeave={() => setZoomLevel(1)}
+            >
+              <img 
+                src={product.images[currentImageIndex]} 
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-300"
+                style={{
+                  transform: `scale(${zoomLevel})`,
+                  transformOrigin: `${mousePos.x}% ${mousePos.y}%`
+                }}
+              />
+              {product.discount > 0 && (
+                <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
+                  -{product.discount}%
                 </div>
+              )}
+              {product.inStock < 10 && (
+                <div className="absolute bottom-4 left-4 bg-orange-600 text-white px-3 py-1 rounded-lg text-sm font-bold">
+                  Only {product.inStock} left!
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail Navigation */}
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {product.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setCurrentImageIndex(idx);
+                    sliderRef.current?.slickGoTo(idx);
+                  }}
+                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                    currentImageIndex === idx 
+                      ? 'border-white' 
+                      : 'border-gray-700 hover:border-gray-500'
+                  }`}
+                >
+                  <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
               ))}
-            </Slider>
+            </div>
+
+            {/* Image Counter */}
+            <div className="text-center text-gray-400 text-sm">
+              Image {currentImageIndex + 1} of {product.images.length}
+            </div>
           </div>
 
           {/* Product Details */}
-          <div>
-            <h1 style={{ fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: 700, margin: '0 0 15px 0', color: '#d4af37' }}>{product.name}</h1>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '25px', flexWrap: 'wrap', paddingBottom: '20px', borderBottom: '1px solid #333' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: 'clamp(16px, 2vw, 20px)' }}>{'⭐'.repeat(Math.floor(product.rating))}</span>
-                <span style={{ color: '#aaa', fontSize: 'clamp(13px, 1.5vw, 15px)', fontWeight: 500 }}>({product.reviews})</span>
+          <div className="space-y-6">
+            {/* Header */}
+            <div>
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{product.name}</h1>
+                  <p className="text-gray-400 text-sm">SKU: {product.sku}</p>
+                </div>
+                <button
+                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  className={`text-3xl transition-transform hover:scale-125 ${isWishlisted ? 'text-red-500' : 'text-gray-400'}`}
+                >
+                  {isWishlisted ? '❤️' : '🤍'}
+                </button>
               </div>
-              <span style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 700, color: '#d4af37' }}>${product.price}</span>
+
+              {/* Rating */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{'⭐'.repeat(Math.floor(product.rating))}</span>
+                  <span className="text-gray-400 text-sm font-bold">({product.reviews} reviews)</span>
+                </div>
+                <div className="flex items-center gap-2 text-green-500 text-sm font-bold">
+                  <span>✓</span>
+                  <span>{product.inStock} in stock</span>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="flex items-center gap-4">
+                <span className="text-4xl font-bold text-white">${product.price}</span>
+                {product.originalPrice > product.price && (
+                  <span className="text-xl text-gray-500 line-through">${product.originalPrice}</span>
+                )}
+              </div>
             </div>
 
-            <p style={{ color: '#ccc', lineHeight: '1.8', marginBottom: '30px', fontSize: 'clamp(14px, 2vw, 16px)' }}>{product.description}</p>
+            {/* Description */}
+            <p className="text-gray-300 leading-relaxed text-base border-b border-gray-700 pb-6">{product.description}</p>
             
-            <div style={{ marginBottom: '30px' }}>
-              <h3 style={{ fontSize: 'clamp(14px, 2vw, 16px)', fontWeight: 600, marginBottom: '12px', color: '#d4af37' }}>Size</h3>
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                {product.sizes.map(size => (
+            {/* Color Selection */}
+            <div>
+              <h3 className="text-base font-bold mb-4 text-white">Color: <span className="text-gray-400">{selectedColor}</span></h3>
+              <div className="flex gap-3 flex-wrap">
+                {product.colors.map(color => (
                   <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    style={{
-                      padding: '10px 16px',
-                      border: selectedSize === size ? '2px solid #d4af37' : '2px solid #333',
-                      backgroundColor: selectedSize === size ? '#d4af37' : '#0a0a0a',
-                      color: selectedSize === size ? '#000' : '#d4af37',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontWeight: 600,
-                      fontSize: 'clamp(12px, 2vw, 14px)',
-                      transition: 'all 0.3s ease'
-                    }}
-                  >{size}</button>
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 ${
+                      selectedColor === color 
+                        ? 'bg-white text-black border-2 border-white shadow-lg' 
+                        : 'bg-gray-800 text-white border-2 border-gray-700 hover:border-white'
+                    }`}
+                  >
+                    {color}
+                  </button>
                 ))}
               </div>
             </div>
 
-            <div style={{ marginBottom: '30px' }}>
-              <h3 style={{ fontSize: 'clamp(14px, 2vw, 16px)', fontWeight: 600, marginBottom: '12px', color: '#d4af37' }}>Quantity</h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{
-                    padding: '10px 16px',
-                    border: '2px solid #333',
-                    backgroundColor: '#0a0a0a',
-                    color: '#d4af37',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                    fontWeight: 600,
-                    transition: 'all 0.3s ease'
-                  }}
-                >−</button>
-                <span style={{ fontSize: 'clamp(16px, 3vw, 20px)', fontWeight: 600, minWidth: '50px', textAlign: 'center', color: '#d4af37' }}>{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  style={{
-                    padding: '10px 16px',
-                    border: '2px solid #333',
-                    backgroundColor: '#0a0a0a',
-                    color: '#d4af37',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                    fontWeight: 600,
-                    transition: 'all 0.3s ease'
-                  }}
-                >+</button>
+            {/* Size Selection */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold text-white">Size: <span className="text-gray-400">{selectedSize}</span></h3>
+                <a href="#" className="text-white text-sm hover:underline">📏 Size Guide</a>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {product.sizes.map(size => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 ${
+                      selectedSize === size 
+                        ? 'bg-white text-black border-2 border-white shadow-lg' 
+                        : 'bg-gray-800 text-white border-2 border-gray-700 hover:border-white'
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
 
-            <button 
-              onClick={handleAddToCart}
-              style={{
-                width: '100%',
-                padding: '16px',
-                backgroundColor: addedToCart ? '#22c55e' : '#d4af37',
-                color: '#000',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: 'clamp(14px, 2vw, 18px)',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (!addedToCart) {
-                  e.target.style.backgroundColor = '#e6c200';
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.3)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!addedToCart) {
-                  e.target.style.backgroundColor = '#d4af37';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = 'none';
-                }
-              }}
-            >
-              {addedToCart ? '✓ Added to Cart' : '🛒 Add to Cart'}
-            </button>
+            {/* Quantity */}
+            <div>
+              <h3 className="text-base font-bold mb-4 text-white">Quantity</h3>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-4 py-3 border-2 border-gray-700 bg-gray-800 text-white rounded-lg font-bold hover:border-white transition-colors text-lg"
+                >
+                  −
+                </button>
+                <span className="text-2xl font-bold text-white min-w-16 text-center">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="px-4 py-3 border-2 border-gray-700 bg-gray-800 text-white rounded-lg font-bold hover:border-white transition-colors text-lg"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-3 pt-4">
+              <button 
+                onClick={handleAddToCart}
+                className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 ${
+                  addedToCart 
+                    ? 'bg-green-600 text-white hover:bg-green-700' 
+                    : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-1 shadow-lg'
+                }`}
+              >
+                {addedToCart ? '✓ Added to Cart' : '🛒 Add to Cart'}
+              </button>
+              {/* <button className="w-full py-4 rounded-lg font-bold text-lg border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300">
+                💳 Buy Now
+              </button> */}
+            </div>
+
+            {/* Trust Badges */}
+            <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 space-y-3">
+              <div className="flex items-center gap-3 text-sm text-gray-300">
+                <span className="text-xl">🚚</span>
+                <span>{product.shipping}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-300">
+                <span className="text-xl">↩️</span>
+                <span>{product.returns}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-300">
+                <span className="text-xl">✓</span>
+                <span>{product.warranty}</span>
+              </div>
+            </div>
+
+            {/* Share Section */}
+            {/* <div className="border-t border-gray-700 pt-4">
+              <p className="text-gray-400 text-sm mb-3">Share this product:</p>
+              <div className="flex gap-3">
+                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">📘</button>
+                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">𝕏</button>
+                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">📧</button>
+                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">🔗</button>
+              </div>
+            </div> */}
           </div>
         </div>
 
-        {/* Features Section */}
-        <div style={{ backgroundColor: '#1a1a1a', padding: 'clamp(20px, 5vw, 40px)', borderRadius: '16px', marginTop: '30px', boxShadow: '0 8px 24px rgba(212, 175, 55, 0.1)', border: '1px solid #333' }}>
-          <h2 style={{ fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: 700, marginBottom: '25px', color: '#d4af37' }}>✨ Product Features</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {product.features.map((feature, index) => (
-              <div key={index} style={{ 
-                padding: '14px 18px', 
-                backgroundColor: '#0a0a0a', 
-                borderRadius: '10px', 
-                fontSize: 'clamp(14px, 2vw, 16px)', 
-                color: '#ccc', 
-                fontWeight: 500,
-                border: '1px solid #333',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <span style={{ color: '#d4af37', fontWeight: 700, fontSize: '18px' }}>✓</span>
-                <span>{feature}</span>
+        {/* Tabs Section */}
+        <div className="bg-gray-900 rounded-xl border border-gray-800 mb-12">
+          <div className="flex border-b border-gray-700 overflow-x-auto">
+            {['description', 'specifications', 'features', 'reviews', 'shipping'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 py-4 px-6 font-bold text-center transition-colors whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'text-white border-b-2 border-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          <div className="p-6 md:p-8">
+            {activeTab === 'description' && (
+              <div className="text-gray-300 leading-relaxed space-y-4">
+                <p>{product.description}</p>
+                <p>This premium product is crafted with attention to detail and made from the finest materials. Perfect for anyone looking for quality and style combined.</p>
+                <p>Each piece is carefully inspected to ensure it meets our high standards of quality and craftsmanship.</p>
               </div>
+            )}
+
+            {activeTab === 'specifications' && (
+              <div className="space-y-4">
+                {Object.entries(product.specifications).map(([key, value]) => (
+                  <div key={key} className="flex justify-between items-center py-3 border-b border-gray-700">
+                    <span className="text-gray-400 font-medium">{key}</span>
+                    <span className="text-white font-bold">{value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === 'features' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {product.features.map((feature, index) => (
+                  <div key={index} className="p-4 bg-gray-800 rounded-lg text-gray-300 font-medium border border-gray-700 flex items-center gap-3">
+                    <span className="text-white font-bold text-lg">✓</span>
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === 'reviews' && (
+              <div>
+                <div className="flex items-center gap-8 mb-8 pb-8 border-b border-gray-700">
+                  <div className="text-5xl font-bold text-white">{product.rating}</div>
+                  <div>
+                    <div className="text-2xl mb-2">{'⭐'.repeat(Math.floor(product.rating))}</div>
+                    <div className="text-gray-400 text-sm">Based on {product.reviews} verified reviews</div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {[
+                    { name: 'John D.', rating: 5, comment: 'Amazing quality! The embroidery is perfect and the fabric is so comfortable.', verified: true },
+                    { name: 'Sarah M.', rating: 4, comment: 'Love this product! Fits perfectly and the custom design looks great.', verified: true },
+                    { name: 'Mike T.', rating: 5, comment: 'Best purchase ever! Highly recommend to everyone.', verified: true }
+                  ].map((review, idx) => (
+                    <div key={idx} className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+                      <div className="flex justify-between items-start mb-2 flex-wrap gap-2">
+                        <div>
+                          <span className="font-bold text-white">{review.name}</span>
+                          {review.verified && <span className="ml-2 text-xs bg-green-900 text-green-400 px-2 py-1 rounded">✓ Verified</span>}
+                        </div>
+                        <span>{'⭐'.repeat(review.rating)}</span>
+                      </div>
+                      <p className="text-gray-300 text-sm">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'shipping' && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-3">Shipping Options</h3>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+                      <p className="font-bold text-white mb-1">Standard Shipping</p>
+                      <p className="text-gray-400 text-sm">5-7 business days - $10</p>
+                    </div>
+                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+                      <p className="font-bold text-white mb-1">Express Shipping</p>
+                      <p className="text-gray-400 text-sm">2-3 business days - $20</p>
+                    </div>
+                    <div className="p-4 bg-gray-800 rounded-lg border border-green-700 bg-green-900/20">
+                      <p className="font-bold text-white mb-1">Free Shipping</p>
+                      <p className="text-gray-400 text-sm">On orders over $100</p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-3">Return Policy</h3>
+                  <p className="text-gray-300">30-day hassle-free returns. If you're not satisfied with your purchase, simply return it within 30 days for a full refund.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Related Products */}
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">You Might Also Like</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedProducts.map(prod => (
+              <Link key={prod.id} to={`/product/${prod.id}`} className="no-underline">
+                <div className="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-white transition-all duration-300 hover:-translate-y-2 group">
+                  <div className="relative overflow-hidden h-64">
+                    <img 
+                      src={prod.image} 
+                      alt={prod.name} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg text-sm font-bold">
+                      ⭐ {prod.rating}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-gray-300 transition-colors">{prod.name}</h3>
+                    <p className="text-2xl font-bold text-white">${prod.price}</p>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div style={{ backgroundColor: '#1a1a1a', padding: 'clamp(20px, 5vw, 40px)', borderRadius: '16px', marginTop: '30px', boxShadow: '0 8px 24px rgba(212, 175, 55, 0.1)', border: '1px solid #333' }}>
-          <h2 style={{ fontSize: 'clamp(20px, 4vw, 24px)', fontWeight: 700, marginBottom: '20px', color: '#d4af37' }}>⭐ Customer Reviews</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '30px', flexWrap: 'wrap' }}>
-            <div style={{ fontSize: 'clamp(36px, 8vw, 48px)', fontWeight: 700, color: '#d4af37' }}>{product.rating}</div>
-            <div>
-              <div style={{ fontSize: 'clamp(18px, 3vw, 24px)' }}>{'⭐'.repeat(Math.floor(product.rating))}</div>
-              <div style={{ color: '#aaa', fontSize: 'clamp(12px, 2vw, 14px)' }}>Based on {product.reviews} reviews</div>
-            </div>
-          </div>
-          <div style={{ borderTop: '1px solid #333', paddingTop: '20px' }}>
+        {/* FAQ Section */}
+        <div className="mt-12 bg-gray-900 p-8 rounded-xl border border-gray-800">
+          <h2 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
+          <div className="space-y-4">
             {[
-              { name: 'John D.', rating: 5, comment: 'Amazing quality! The embroidery is perfect and the fabric is so comfortable.' },
-              { name: 'Sarah M.', rating: 4, comment: 'Love this product! Fits perfectly and the custom design looks great.' }
-            ].map((review, idx) => (
-              <div key={idx} style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#0a0a0a', borderRadius: '8px', border: '1px solid #333' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: 600, fontSize: 'clamp(14px, 2vw, 16px)', color: '#d4af37' }}>{review.name}</span>
-                  <span style={{ fontSize: 'clamp(12px, 2vw, 14px)' }}>{'⭐'.repeat(review.rating)}</span>
-                </div>
-                <p style={{ color: '#ccc', margin: 0, fontSize: 'clamp(13px, 2vw, 15px)' }}>{review.comment}</p>
-              </div>
+              { q: 'What is the material composition?', a: 'This product is made from premium materials as specified in the specifications tab.' },
+              { q: 'How do I care for this product?', a: 'Please refer to the care instructions in the specifications tab for detailed washing and maintenance guidelines.' },
+              { q: 'Is this product available in other colors?', a: 'Yes, this product is available in multiple colors as shown in the color selection above.' },
+              { q: 'What is your return policy?', a: 'We offer a 30-day hassle-free return policy. See the shipping tab for more details.' }
+            ].map((faq, idx) => (
+              <details key={idx} className="group border border-gray-700 rounded-lg p-4 cursor-pointer hover:border-white transition-colors">
+                <summary className="font-bold text-white flex justify-between items-center">
+                  {faq.q}
+                  <span className="text-xl group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="text-gray-400 mt-3">{faq.a}</p>
+              </details>
             ))}
           </div>
         </div>
       </div>
 
       <style>{`
-        .slick-prev, .slick-next {
-          width: 50px;
-          height: 50px;
-          background-color: #d4af37 !important;
-          border-radius: 8px;
-          z-index: 10;
-          top: 50% !important;
-          transform: translateY(-50%) !important;
+        .slick-dots {
+          bottom: 20px !important;
         }
 
-        .slick-prev:before, .slick-next:before {
-          font-size: 24px;
-          color: #000 !important;
+        .slick-dots li button:before {
+          color: white !important;
+          font-size: 12px !important;
         }
 
-        .slick-prev:hover, .slick-next:hover {
-          background-color: #e6c200 !important;
-        }
-
-        .slick-prev {
-          left: -70px !important;
-        }
-
-        .slick-next {
-          right: -70px !important;
+        .slick-dots li.slick-active button:before {
+          color: white !important;
         }
       `}</style>
     </div>
   );
-};
-
-const CustomPrevArrow = (props) => {
-  const { onClick } = props;
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        position: 'absolute',
-        left: '-70px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: '50px',
-        height: '50px',
-        backgroundColor: '#d4af37',
-        border: 'none',
-        borderRadius: '8px',
-        fontSize: '24px',
-        cursor: 'pointer',
-        zIndex: 10,
-        transition: 'all 0.3s ease'
-      }}
-      onMouseEnter={(e) => e.target.style.backgroundColor = '#e6c200'}
-      onMouseLeave={(e) => e.target.style.backgroundColor = '#d4af37'}
-    >
-      &lt;
-    </button>
-  );
-};
-
-const CustomNextArrow = (props) => {
-  const { onClick } = props;
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        position: 'absolute',
-        right: '-70px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: '50px',
-        height: '50px',
-        backgroundColor: '#d4af37',
-        border: 'none',
-        borderRadius: '8px',
-        fontSize: '24px',
-        cursor: 'pointer',
-        zIndex: 10,
-        transition: 'all 0.3s ease'
-      }}
-      onMouseEnter={(e) => e.target.style.backgroundColor = '#e6c200'}
-      onMouseLeave={(e) => e.target.style.backgroundColor = '#d4af37'}
-    >
-      &gt;
-    </button>
-  );
-};
+}
 
 export default Products;

@@ -11,190 +11,99 @@ function Footer() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const styles = {
-    footer: {
-      background: "linear-gradient(135deg, #000 0%, #1a1a1a 100%)",
-      color: "white",
-      padding: isMobile ? "40px 20px 20px 20px" : "50px 10% 20px 10%",
-      fontFamily: "Arial, sans-serif",
-      borderTop: "2px solid #d4af37",
-      marginTop: "60px",
-      margin: 0,
-      width: "100%",
-      boxSizing: "border-box"
-    },
-
-    grid: {
-      display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(200px, 1fr))",
-      gap: isMobile ? "30px" : "40px",
-      marginBottom: "40px"
-    },
-
-    title: {
-      fontSize: "18px",
-      fontWeight: "700",
-      marginBottom: "15px",
-      color: "#d4af37",
-      letterSpacing: "0.5px"
-    },
-
-    link: {
-      display: "block",
-      color: "#ccc",
-      textDecoration: "none",
-      marginBottom: "10px",
-      fontSize: "14px",
-      transition: "all 0.3s ease",
-      cursor: "pointer"
-    },
-
-    iconRow: {
-      display: "flex",
-      gap: "15px",
-      marginTop: "15px"
-    },
-
-    icon: {
-      fontSize: "20px",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-      color: "#d4af37"
-    },
-
-    bottom: {
-      borderTop: "1px solid #333",
-      paddingTop: "20px",
-      textAlign: "center",
-      fontSize: "14px",
-      color: "#aaa"
-    }
-  };
-
   return (
-    <footer style={styles.footer}>
-      <div style={styles.grid}>
+    <footer className="bg-black border-t-2 border-white mt-12 md:mt-16">
+      {/* Footer Grid */}
+      <div className={`max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16 grid ${isMobile ? 'grid-cols-1' : 'grid-cols-5'} gap-8 md:gap-12`}>
+        
+        {/* Madembro Section */}
         <div>
-          <h3 style={styles.title}>Madembro</h3>
-          <p style={{ color: "#bbb", fontSize: "14px", lineHeight: "1.6" }}>
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4 tracking-wide">Madembro</h3>
+          <p className="text-gray-400 text-sm leading-relaxed">
             Premium custom embroidery studio. Create unique, personalized apparel with our professional embroidery services.
           </p>
         </div>
 
+        {/* Shop Section */}
         <div>
-          <h3 style={styles.title}>Shop</h3>
-          <Link to="/tshirts" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            T-Shirts
-          </Link>
-          <Link to="/hoodies" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Hoodies
-          </Link>
-          <Link to="/sweatshirts" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Sweatshirts
-          </Link>
-          <Link to="/custom-embroidery" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Custom Embroidery
-          </Link>
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4 tracking-wide">Shop</h3>
+          <div className="flex flex-col gap-3">
+            <Link to="/tshirts" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              T-Shirts
+            </Link>
+            <Link to="/hoodies" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Hoodies
+            </Link>
+            <Link to="/sweatshirts" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Sweatshirts
+            </Link>
+            <Link to="/custom-embroidery" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Custom Embroidery
+            </Link>
+          </div>
         </div>
 
+        {/* Company Section */}
         <div>
-          <h3 style={styles.title}>Company</h3>
-          <Link to="/our-story" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Our Story
-          </Link>
-          <Link to="/contact" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Contact
-          </Link>
-          <a href="#" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Careers
-          </a>
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4 tracking-wide">Company</h3>
+          <div className="flex flex-col gap-3">
+            <Link to="/our-story" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Our Story
+            </Link>
+            <Link to="/contact" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Contact
+            </Link>
+            <a href="#" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Careers
+            </a>
+          </div>
         </div>
 
+        {/* Policies Section */}
         <div>
-          <h3 style={styles.title}>Policies</h3>
-          <Link to="/terms-and-conditions" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Terms & Conditions
-          </Link>
-          <Link to="/privacy-policy" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Privacy Policy
-          </Link>
-          <Link to="/shipping-policy" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Shipping Policy
-          </Link>
-          <Link to="/refund-policy" style={styles.link}
-            onMouseEnter={(e) => e.target.style.color = "#d4af37"}
-            onMouseLeave={(e) => e.target.style.color = "#ccc"}
-          >
-            Refund Policy
-          </Link>
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4 tracking-wide">Policies</h3>
+          <div className="flex flex-col gap-3">
+            <Link to="/terms-and-conditions" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Terms & Conditions
+            </Link>
+            <Link to="/privacy-policy" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/shipping-policy" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Shipping Policy
+            </Link>
+            <Link to="/refund-policy" className="text-gray-400 text-sm no-underline hover:text-white transition-colors">
+              Refund Policy
+            </Link>
+          </div>
         </div>
 
+        {/* Follow Us Section */}
         <div>
-          <h3 style={styles.title}>Follow Us</h3>
-          <div style={styles.iconRow}>
-            <FaInstagram 
-              style={styles.icon}
-              onMouseEnter={(e) => e.target.style.transform = "scale(1.2)"}
-              onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
-            />
-            <FaFacebookF 
-              style={styles.icon}
-              onMouseEnter={(e) => e.target.style.transform = "scale(1.2)"}
-              onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
-            />
-            <FaTwitter 
-              style={styles.icon}
-              onMouseEnter={(e) => e.target.style.transform = "scale(1.2)"}
-              onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
-            />
+          <h3 className="text-lg md:text-xl font-bold text-white mb-4 tracking-wide">Follow Us</h3>
+          <div className="flex gap-4">
+            <FaInstagram className="text-white text-xl cursor-pointer hover:scale-125 transition-transform" />
+            <FaFacebookF className="text-white text-xl cursor-pointer hover:scale-125 transition-transform" />
+            <FaTwitter className="text-white text-xl cursor-pointer hover:scale-125 transition-transform" />
           </div>
         </div>
       </div>
 
-      <div style={styles.bottom}>
-        © {new Date().getFullYear()} Madembro. All rights reserved.
-        <br />
-        Developed with ❤️ by{" "}
-        <a 
-          href="https://www.staffarc.in" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          style={{ color: "#d4af37", textDecoration: "none", fontWeight: "600" }}
-          onMouseEnter={(e) => e.target.style.textDecoration = "underline"}
-          onMouseLeave={(e) => e.target.style.textDecoration = "none"}
-        >
-          StaffArc
-        </a>
+      {/* Bottom Section */}
+      <div className="border-t border-gray-800 px-4 md:px-8 py-6 md:py-8 text-center">
+        <p className="text-gray-500 text-xs md:text-sm">
+          © {new Date().getFullYear()} Madembro. All rights reserved.
+          <br />
+          Developed with ❤️ by{" "}
+          <a 
+            href="https://www.staffarc.in" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-white font-bold no-underline hover:underline"
+          >
+            StaffArc
+          </a>
+        </p>
       </div>
     </footer>
   );

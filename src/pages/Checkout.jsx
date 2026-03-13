@@ -33,31 +33,13 @@ const Checkout = () => {
 
   if (cart.length === 0 && !orderPlaced) {
     return (
-      <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 'clamp(20px, 5vw, 40px)' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center', paddingTop: '60px' }}>
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 36px)', fontWeight: 700, color: '#d4af37', marginBottom: '20px' }}>Your Cart is Empty</h1>
-          <p style={{ fontSize: 'clamp(14px, 2vw, 16px)', color: '#ccc', marginBottom: '30px' }}>Add items to your cart before checking out.</p>
+      <div className="bg-black min-h-screen p-4 md:p-8">
+        <div className="max-w-4xl mx-auto text-center pt-16">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Your Cart is Empty</h1>
+          <p className="text-gray-400 mb-8 text-base md:text-lg">Add items to your cart before checking out.</p>
           <button
             onClick={() => navigate('/tshirts')}
-            style={{
-              padding: '12px 32px',
-              backgroundColor: '#d4af37',
-              color: '#000',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#e6c200';
-              e.target.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = '#d4af37';
-              e.target.style.transform = 'translateY(0)';
-            }}
+            className="bg-white text-black px-8 py-3 font-bold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1"
           >
             Continue Shopping
           </button>
@@ -68,39 +50,21 @@ const Checkout = () => {
 
   if (orderPlaced) {
     return (
-      <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 'clamp(20px, 5vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center', backgroundColor: '#1a1a1a', padding: 'clamp(30px, 5vw, 50px)', borderRadius: '16px', border: '1px solid #333' }}>
-          <div style={{ fontSize: '60px', marginBottom: '20px' }}>✓</div>
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 36px)', fontWeight: 700, color: '#22c55e', marginBottom: '15px' }}>Order Placed Successfully!</h1>
-          <p style={{ fontSize: 'clamp(14px, 2vw, 16px)', color: '#ccc', marginBottom: '10px' }}>Thank you for your purchase.</p>
-          <p style={{ fontSize: 'clamp(14px, 2vw, 16px)', color: '#aaa', marginBottom: '30px' }}>Order confirmation has been sent to your email.</p>
+      <div className="bg-black min-h-screen p-4 md:p-8 flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-gray-900 p-8 md:p-12 rounded-xl border border-gray-800 text-center">
+          <div className="text-6xl mb-6">✓</div>
+          <h1 className="text-3xl md:text-4xl font-bold text-green-500 mb-4">Order Placed Successfully!</h1>
+          <p className="text-gray-400 mb-2 text-base md:text-lg">Thank you for your purchase.</p>
+          <p className="text-gray-500 mb-8 text-base md:text-lg">Order confirmation has been sent to your email.</p>
           
-          <div style={{ backgroundColor: '#0a0a0a', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #333' }}>
-            <p style={{ color: '#d4af37', fontSize: 'clamp(12px, 2vw, 14px)', margin: '0 0 10px 0' }}>Order Number</p>
-            <p style={{ color: '#fff', fontSize: 'clamp(16px, 2vw, 18px)', fontWeight: 600, margin: 0 }}>#{Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+          <div className="bg-gray-800 p-6 rounded-lg mb-8 border border-gray-700">
+            <p className="text-white text-sm mb-2">Order Number</p>
+            <p className="text-white text-xl md:text-2xl font-bold">#{Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
           </div>
 
           <button
             onClick={() => navigate('/')}
-            style={{
-              padding: '12px 32px',
-              backgroundColor: '#d4af37',
-              color: '#000',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#e6c200';
-              e.target.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = '#d4af37';
-              e.target.style.transform = 'translateY(0)';
-            }}
+            className="bg-white text-black px-8 py-3 font-bold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1"
           >
             Back to Home
           </button>
@@ -155,313 +119,238 @@ const Checkout = () => {
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '12px',
-    backgroundColor: '#0a0a0a',
-    border: '1px solid #333',
-    borderRadius: '8px',
-    color: '#fff',
-    fontSize: '14px',
-    fontFamily: 'inherit',
-    boxSizing: 'border-box'
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '8px',
-    color: '#d4af37',
-    fontSize: '14px',
-    fontWeight: 600
-  };
-
-  const errorStyle = {
-    color: '#ff6b6b',
-    fontSize: '12px',
-    marginTop: '4px'
-  };
+  const inputStyle = 'w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors';
+  const labelStyle = 'block mb-2 text-white font-bold text-sm md:text-base';
+  const errorStyle = 'text-red-500 text-xs mt-1';
 
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 'clamp(20px, 5vw, 40px)' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: 'clamp(28px, 5vw, 36px)', fontWeight: 700, color: '#d4af37', marginBottom: '40px' }}>Checkout</h1>
+    <div className="bg-black min-h-screen p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-12">Checkout</h1>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : '1fr 350px',
-          gap: isMobile ? '30px' : '40px'
-        }}>
+        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'} gap-6 md:gap-8`}>
           {/* Checkout Form */}
-          <form onSubmit={handlePlaceOrder}>
+          <form onSubmit={handlePlaceOrder} className={isMobile ? 'col-span-1' : 'lg:col-span-2'}>
             {/* Shipping Information */}
-            <div style={{ backgroundColor: '#1a1a1a', borderRadius: '16px', padding: 'clamp(20px, 3vw, 30px)', border: '1px solid #333', marginBottom: '30px' }}>
-              <h2 style={{ fontSize: 'clamp(18px, 3vw, 20px)', fontWeight: 700, color: '#d4af37', marginBottom: '25px', margin: 0, marginBottom: '25px' }}>Shipping Information</h2>
+            <div className="bg-gray-900 rounded-xl p-6 md:p-8 border border-gray-800 mb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-6">Shipping Information</h2>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label style={labelStyle}>First Name</label>
+                  <label className={labelStyle}>First Name</label>
                   <input
                     type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="John"
                   />
-                  {errors.firstName && <div style={errorStyle}>{errors.firstName}</div>}
+                  {errors.firstName && <div className={errorStyle}>{errors.firstName}</div>}
                 </div>
                 <div>
-                  <label style={labelStyle}>Last Name</label>
+                  <label className={labelStyle}>Last Name</label>
                   <input
                     type="text"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="Doe"
                   />
-                  {errors.lastName && <div style={errorStyle}>{errors.lastName}</div>}
+                  {errors.lastName && <div className={errorStyle}>{errors.lastName}</div>}
                 </div>
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Email</label>
+              <div className="mb-4">
+                <label className={labelStyle}>Email</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className={inputStyle}
                   placeholder="john@example.com"
                 />
-                {errors.email && <div style={errorStyle}>{errors.email}</div>}
+                {errors.email && <div className={errorStyle}>{errors.email}</div>}
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Phone</label>
+              <div className="mb-4">
+                <label className={labelStyle}>Phone</label>
                 <input
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className={inputStyle}
                   placeholder="+1 (555) 000-0000"
                 />
-                {errors.phone && <div style={errorStyle}>{errors.phone}</div>}
+                {errors.phone && <div className={errorStyle}>{errors.phone}</div>}
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Address</label>
+              <div className="mb-4">
+                <label className={labelStyle}>Address</label>
                 <input
                   type="text"
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className={inputStyle}
                   placeholder="123 Main Street"
                 />
-                {errors.address && <div style={errorStyle}>{errors.address}</div>}
+                {errors.address && <div className={errorStyle}>{errors.address}</div>}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label style={labelStyle}>City</label>
+                  <label className={labelStyle}>City</label>
                   <input
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="New York"
                   />
-                  {errors.city && <div style={errorStyle}>{errors.city}</div>}
+                  {errors.city && <div className={errorStyle}>{errors.city}</div>}
                 </div>
                 <div>
-                  <label style={labelStyle}>State</label>
+                  <label className={labelStyle}>State</label>
                   <input
                     type="text"
                     name="state"
                     value={formData.state}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="NY"
                   />
-                  {errors.state && <div style={errorStyle}>{errors.state}</div>}
+                  {errors.state && <div className={errorStyle}>{errors.state}</div>}
                 </div>
                 <div>
-                  <label style={labelStyle}>Zip Code</label>
+                  <label className={labelStyle}>Zip Code</label>
                   <input
                     type="text"
                     name="zipCode"
                     value={formData.zipCode}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="10001"
                   />
-                  {errors.zipCode && <div style={errorStyle}>{errors.zipCode}</div>}
+                  {errors.zipCode && <div className={errorStyle}>{errors.zipCode}</div>}
                 </div>
               </div>
             </div>
 
             {/* Payment Information */}
-            <div style={{ backgroundColor: '#1a1a1a', borderRadius: '16px', padding: 'clamp(20px, 3vw, 30px)', border: '1px solid #333' }}>
-              <h2 style={{ fontSize: 'clamp(18px, 3vw, 20px)', fontWeight: 700, color: '#d4af37', marginBottom: '25px', margin: 0, marginBottom: '25px' }}>Payment Information</h2>
+            <div className="bg-gray-900 rounded-xl p-6 md:p-8 border border-gray-800">
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-6">Payment Information</h2>
               
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Cardholder Name</label>
+              <div className="mb-4">
+                <label className={labelStyle}>Cardholder Name</label>
                 <input
                   type="text"
                   name="cardName"
                   value={formData.cardName}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className={inputStyle}
                   placeholder="John Doe"
                 />
-                {errors.cardName && <div style={errorStyle}>{errors.cardName}</div>}
+                {errors.cardName && <div className={errorStyle}>{errors.cardName}</div>}
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={labelStyle}>Card Number</label>
+              <div className="mb-4">
+                <label className={labelStyle}>Card Number</label>
                 <input
                   type="text"
                   name="cardNumber"
                   value={formData.cardNumber}
                   onChange={handleInputChange}
-                  style={inputStyle}
+                  className={inputStyle}
                   placeholder="1234 5678 9012 3456"
                   maxLength="19"
                 />
-                {errors.cardNumber && <div style={errorStyle}>{errors.cardNumber}</div>}
+                {errors.cardNumber && <div className={errorStyle}>{errors.cardNumber}</div>}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label style={labelStyle}>Expiry Date</label>
+                  <label className={labelStyle}>Expiry Date</label>
                   <input
                     type="text"
                     name="expiryDate"
                     value={formData.expiryDate}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="MM/YY"
                     maxLength="5"
                   />
-                  {errors.expiryDate && <div style={errorStyle}>{errors.expiryDate}</div>}
+                  {errors.expiryDate && <div className={errorStyle}>{errors.expiryDate}</div>}
                 </div>
                 <div>
-                  <label style={labelStyle}>CVV</label>
+                  <label className={labelStyle}>CVV</label>
                   <input
                     type="text"
                     name="cvv"
                     value={formData.cvv}
                     onChange={handleInputChange}
-                    style={inputStyle}
+                    className={inputStyle}
                     placeholder="123"
                     maxLength="4"
                   />
-                  {errors.cvv && <div style={errorStyle}>{errors.cvv}</div>}
+                  {errors.cvv && <div className={errorStyle}>{errors.cvv}</div>}
                 </div>
               </div>
             </div>
           </form>
 
           {/* Order Summary */}
-          <div style={{
-            backgroundColor: '#1a1a1a',
-            borderRadius: '16px',
-            padding: 'clamp(20px, 3vw, 30px)',
-            border: '1px solid #333',
-            height: 'fit-content',
-            position: isMobile ? 'static' : 'sticky',
-            top: '100px'
-          }}>
-            <h2 style={{ fontSize: 'clamp(18px, 3vw, 20px)', fontWeight: 700, color: '#d4af37', marginBottom: '25px', margin: 0, marginBottom: '25px' }}>Order Summary</h2>
+          <div className={`bg-gray-900 rounded-xl p-6 md:p-8 border border-gray-800 h-fit ${isMobile ? 'col-span-1' : 'lg:col-span-1'}`}>
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-6">Order Summary</h2>
 
-            <div style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '25px', paddingBottom: '25px', borderBottom: '1px solid #333' }}>
+            <div className="max-h-64 overflow-y-auto mb-6 pb-6 border-b border-gray-700">
               {cart.map((item, index) => (
-                <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontSize: 'clamp(13px, 2vw, 14px)', color: '#ccc' }}>
+                <div key={index} className="flex justify-between mb-4 text-sm md:text-base text-gray-400">
                   <div>
-                    <p style={{ margin: 0, color: '#d4af37', fontWeight: 600 }}>{item.name}</p>
-                    <p style={{ margin: '4px 0 0 0', color: '#aaa', fontSize: '12px' }}>Size: {item.size} × {item.quantity}</p>
+                    <p className="text-white font-bold">{item.name}</p>
+                    <p className="text-xs text-gray-500">Size: {item.size} × {item.quantity}</p>
                   </div>
-                  <span style={{ fontWeight: 600, color: '#d4af37' }}>${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-bold text-white">${(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '25px', paddingBottom: '25px', borderBottom: '1px solid #333' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'clamp(14px, 2vw, 16px)', color: '#ccc' }}>
+            <div className="flex flex-col gap-4 mb-6 pb-6 border-b border-gray-700">
+              <div className="flex justify-between text-sm md:text-base text-gray-400">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'clamp(14px, 2vw, 16px)', color: '#ccc' }}>
+              <div className="flex justify-between text-sm md:text-base text-gray-400">
                 <span>Tax (10%)</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'clamp(14px, 2vw, 16px)', color: '#ccc' }}>
+              <div className="flex justify-between text-sm md:text-base text-gray-400">
                 <span>Shipping</span>
-                <span style={{ color: shipping === 0 ? '#22c55e' : '#ccc' }}>
+                <span className={shipping === 0 ? 'text-green-500 font-bold' : 'text-gray-400'}>
                   {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
                 </span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'clamp(16px, 2.5vw, 18px)', fontWeight: 700, color: '#d4af37', marginBottom: '30px' }}>
+            <div className="flex justify-between text-lg md:text-xl font-bold text-white mb-6">
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
             </div>
 
             <button
               onClick={handlePlaceOrder}
-              style={{
-                width: '100%',
-                padding: '14px',
-                backgroundColor: '#d4af37',
-                color: '#000',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: 'clamp(14px, 2vw, 16px)',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#e6c200';
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 8px 20px rgba(212, 175, 55, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#d4af37';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
-              }}
+              className="w-full bg-white text-black py-3 rounded-lg font-bold hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1 mb-3"
             >
               Place Order
             </button>
 
             <button
               onClick={() => navigate('/cart')}
-              style={{
-                width: '100%',
-                padding: '14px',
-                backgroundColor: 'transparent',
-                color: '#d4af37',
-                border: '2px solid #d4af37',
-                borderRadius: '8px',
-                fontSize: 'clamp(14px, 2vw, 16px)',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                marginTop: '12px'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#d4af37';
-                e.target.style.color = '#000';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#d4af37';
-              }}
+              className="w-full bg-transparent text-white border-2 border-white py-3 rounded-lg font-bold hover:bg-white hover:text-black transition-all duration-300"
             >
               Back to Cart
             </button>

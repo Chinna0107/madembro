@@ -2,25 +2,25 @@ import React from 'react';
 
 const RefundPolicy = () => {
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 'clamp(20px, 5vw, 40px)' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: 'clamp(28px, 5vw, 36px)', fontWeight: 700, color: '#d4af37', marginBottom: '30px' }}>
+    <div className="bg-black min-h-screen p-4 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-8">
           Refund Policy
         </h1>
 
-        <div style={{ backgroundColor: '#1a1a1a', padding: 'clamp(20px, 3vw, 40px)', borderRadius: '12px', border: '1px solid #333' }}>
-          <div style={{ color: '#ccc', lineHeight: '1.8', fontSize: 'clamp(14px, 2vw, 16px)' }}>
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Return Window</h2>
+        <div className="bg-gray-900 p-6 md:p-8 rounded-xl border border-gray-800 space-y-8">
+          <div className="text-gray-300 leading-relaxed text-sm md:text-base">
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Return Window</h2>
               <p>
                 We offer a 30-day return window from the date of purchase. Items must be unused, unwashed, and in original condition with all tags attached to be eligible for return.
               </p>
             </section>
 
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Eligibility for Returns</h2>
-              <p>To be eligible for a return, your item must meet the following conditions:</p>
-              <ul style={{ marginLeft: '20px', marginTop: '10px' }}>
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Eligibility for Returns</h2>
+              <p className="mb-4">To be eligible for a return, your item must meet the following conditions:</p>
+              <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Item must be returned within 30 days of purchase</li>
                 <li>Item must be unused and unwashed</li>
                 <li>Item must be in original condition with all tags attached</li>
@@ -29,10 +29,10 @@ const RefundPolicy = () => {
               </ul>
             </section>
 
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>How to Initiate a Return</h2>
-              <p>To initiate a return, please follow these steps:</p>
-              <ol style={{ marginLeft: '20px', marginTop: '10px' }}>
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">How to Initiate a Return</h2>
+              <p className="mb-4">To initiate a return, please follow these steps:</p>
+              <ol className="list-decimal list-inside space-y-2 ml-4">
                 <li>Contact our customer support team at returns@madembro.com</li>
                 <li>Provide your order number and reason for return</li>
                 <li>Receive a return authorization number and shipping label</li>
@@ -41,31 +41,31 @@ const RefundPolicy = () => {
               </ol>
             </section>
 
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Refund Processing</h2>
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Refund Processing</h2>
               <p>
                 Refunds will be processed within 7-10 business days after we receive and inspect your returned item. The refund will be credited to your original payment method. Please note that it may take an additional 3-5 business days for the refund to appear in your account depending on your bank.
               </p>
             </section>
 
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Shipping Costs</h2>
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Shipping Costs</h2>
               <p>
                 Original shipping costs are non-refundable. If you receive a defective or damaged item, we will provide a prepaid return shipping label. For other returns, customers are responsible for return shipping costs.
               </p>
             </section>
 
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Defective or Damaged Items</h2>
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Defective or Damaged Items</h2>
               <p>
                 If you receive a defective or damaged item, please contact us immediately with photos of the damage. We will provide a replacement or full refund at no cost to you, including return shipping.
               </p>
             </section>
 
-            <section style={{ marginBottom: '30px' }}>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Non-Returnable Items</h2>
-              <p>The following items cannot be returned:</p>
-              <ul style={{ marginLeft: '20px', marginTop: '10px' }}>
+            <section>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Non-Returnable Items</h2>
+              <p className="mb-4">The following items cannot be returned:</p>
+              <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Custom embroidered items (unless defective)</li>
                 <li>Items that have been worn, washed, or altered</li>
                 <li>Items without original tags or packaging</li>
@@ -74,7 +74,7 @@ const RefundPolicy = () => {
             </section>
 
             <section>
-              <h2 style={{ color: '#d4af37', fontSize: 'clamp(18px, 3vw, 22px)', marginBottom: '15px' }}>Contact Us</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">Contact Us</h2>
               <p>
                 For any questions about our refund policy, please contact us at returns@madembro.com or call our customer support team.
               </p>

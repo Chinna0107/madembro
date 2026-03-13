@@ -2,53 +2,40 @@ import React from 'react';
 
 const OurStory = () => {
   return (
-    <div style={{ backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
+    <div className="bg-black min-h-screen">
       {/* Hero Section */}
-      <section style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: '#fff',
-        padding: 'clamp(40px, 10vw, 100px) 20px',
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-50%',
-          left: '-10%',
-          width: '500px',
-          height: '500px',
-          background: 'rgba(255,255,255,0.1)',
-          borderRadius: '50%'
-        }}></div>
-        <h1 style={{ fontSize: 'clamp(32px, 8vw, 48px)', margin: '0 0 20px 0', fontWeight: 700, position: 'relative', zIndex: 1 }}>Our Story</h1>
-        <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', margin: 0, position: 'relative', zIndex: 1 }}>Crafting Quality, Creating Memories</p>
+      <section className="bg-white text-black py-16 md:py-24 px-4 text-center relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gray-200 rounded-full opacity-10 -ml-48 -mt-48"></div>
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h1>
+          <p className="text-lg md:text-xl text-gray-700">Crafting Quality, Creating Memories</p>
+        </div>
       </section>
 
       {/* Story Section */}
-      <section style={{ maxWidth: '1200px', margin: '60px auto', padding: '0 20px' }}>
-        <div style={{ backgroundColor: '#fff', padding: 'clamp(30px, 5vw, 60px)', borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-          <h2 style={{ fontSize: 'clamp(28px, 6vw, 36px)', fontWeight: 700, marginBottom: '30px', color: '#333' }}>Who We Are</h2>
-          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', lineHeight: '1.8', color: '#666', marginBottom: '20px' }}>
+      <section className="max-w-4xl mx-auto px-4 py-16 md:py-24">
+        <div className="bg-gray-900 p-8 md:p-12 rounded-xl border border-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Who We Are</h2>
+          <p className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">
             Welcome to Meda - your premier destination for custom embroidery clothing. Founded in 2020, we started with a simple vision: to create high-quality, personalized apparel that tells your unique story.
           </p>
-          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', lineHeight: '1.8', color: '#666', marginBottom: '20px' }}>
+          <p className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">
             What began as a small passion project in a garage has grown into a thriving business serving thousands of satisfied customers worldwide. We believe that clothing is more than just fabric - it's a form of self-expression, a way to celebrate achievements, and a means to create lasting memories.
           </p>
-          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', lineHeight: '1.8', color: '#666' }}>
+          <p className="text-gray-300 leading-relaxed text-base md:text-lg">
             Today, we continue to innovate and push the boundaries of what's possible in custom embroidery, always keeping our customers at the heart of everything we do.
           </p>
         </div>
       </section>
 
       {/* Mission Section */}
-      <section style={{ maxWidth: '1200px', margin: '60px auto', padding: '0 20px' }}>
-        <div style={{ backgroundColor: '#fff', padding: 'clamp(30px, 5vw, 60px)', borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-          <h2 style={{ fontSize: 'clamp(28px, 6vw, 36px)', fontWeight: 700, marginBottom: '30px', color: '#333' }}>Our Mission</h2>
-          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', lineHeight: '1.8', color: '#666', marginBottom: '30px' }}>
+      <section className="max-w-4xl mx-auto px-4 py-16 md:py-24">
+        <div className="bg-gray-900 p-8 md:p-12 rounded-xl border border-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">Our Mission</h2>
+          <p className="text-gray-300 leading-relaxed mb-8 text-base md:text-lg">
             Our mission is to provide premium quality custom embroidery clothing that exceeds expectations. We are committed to:
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               'Delivering exceptional craftsmanship in every stitch',
               'Using only the finest materials and sustainable practices',
@@ -57,15 +44,7 @@ const OurStory = () => {
               'Building a community of satisfied, loyal customers',
               'Innovating and improving continuously'
             ].map((item, idx) => (
-              <div key={idx} style={{
-                backgroundColor: '#f5f5f5',
-                padding: '20px',
-                borderRadius: '12px',
-                borderLeft: '4px solid #667eea',
-                fontSize: 'clamp(14px, 2vw, 16px)',
-                lineHeight: '1.6',
-                color: '#666'
-              }}>
+              <div key={idx} className="p-4 bg-gray-800 rounded-lg border-l-4 border-white text-gray-300 text-sm md:text-base">
                 ✓ {item}
               </div>
             ))}
@@ -74,9 +53,9 @@ const OurStory = () => {
       </section>
 
       {/* Values Section */}
-      <section style={{ maxWidth: '1200px', margin: '60px auto', padding: '0 20px' }}>
-        <h2 style={{ fontSize: 'clamp(28px, 6vw, 36px)', fontWeight: 700, marginBottom: '40px', textAlign: 'center', color: '#333' }}>Our Core Values</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
+      <section className="max-w-6xl mx-auto px-4 py-16 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">Our Core Values</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {[
             { icon: '🎨', title: 'Creativity', desc: 'We embrace innovation and creative thinking in every design we create.' },
             { icon: '⭐', title: 'Quality', desc: 'Excellence is not an act but a habit. We maintain the highest standards.' },
@@ -85,63 +64,40 @@ const OurStory = () => {
             { icon: '🤝', title: 'Integrity', desc: 'We conduct business with honesty, transparency, and ethical practices.' },
             { icon: '🚀', title: 'Innovation', desc: 'We constantly evolve and improve to serve you better.' }
           ].map((item, idx) => (
-            <div key={idx} style={{
-              backgroundColor: '#fff',
-              padding: '40px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-              textAlign: 'center',
-              transition: 'all 0.3s ease',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(102, 126, 234, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-            }}>
-              <div style={{ fontSize: '48px', marginBottom: '20px' }}>{item.icon}</div>
-              <h3 style={{ fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 700, marginBottom: '15px', color: '#333' }}>{item.title}</h3>
-              <p style={{ fontSize: 'clamp(14px, 2vw, 16px)', lineHeight: '1.6', color: '#666' }}>{item.desc}</p>
+            <div key={idx} className="bg-gray-900 p-8 rounded-xl border border-gray-800 text-center hover:border-white transition-all duration-300 hover:-translate-y-2">
+              <div className="text-5xl mb-4">{item.icon}</div>
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{item.title}</h3>
+              <p className="text-gray-400 text-sm md:text-base leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Team Section */}
-      <section style={{ maxWidth: '1200px', margin: '60px auto 80px', padding: '0 20px' }}>
-        <div style={{ backgroundColor: '#fff', padding: 'clamp(30px, 5vw, 60px)', borderRadius: '16px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
-          <h2 style={{ fontSize: 'clamp(28px, 6vw, 36px)', fontWeight: 700, marginBottom: '30px', color: '#333' }}>Our Passionate Team</h2>
-          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', lineHeight: '1.8', color: '#666', marginBottom: '20px' }}>
+      <section className="max-w-4xl mx-auto px-4 py-16 md:py-24">
+        <div className="bg-gray-900 p-8 md:p-12 rounded-xl border border-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Our Passionate Team</h2>
+          <p className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">
             Behind every beautiful piece is a dedicated team of skilled artisans, designers, and customer service professionals. Our team is passionate about what we do and committed to bringing your vision to life.
           </p>
-          <p style={{ fontSize: 'clamp(16px, 2vw, 18px)', lineHeight: '1.8', color: '#666' }}>
+          <p className="text-gray-300 leading-relaxed text-base md:text-lg">
             With years of combined experience in embroidery, fashion, and customer service, we take pride in delivering products that exceed expectations and create lasting relationships with our customers. Every team member shares our commitment to excellence and customer satisfaction.
           </p>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section style={{ maxWidth: '1200px', margin: '60px auto 80px', padding: '0 20px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px' }}>
+      <section className="max-w-6xl mx-auto px-4 py-16 md:py-24">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {[
             { number: '5000+', label: 'Happy Customers' },
             { number: '10000+', label: 'Products Delivered' },
             { number: '50+', label: 'Design Options' },
             { number: '4.8★', label: 'Average Rating' }
           ].map((stat, idx) => (
-            <div key={idx} style={{
-              backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: '#fff',
-              padding: '40px',
-              borderRadius: '16px',
-              textAlign: 'center',
-              boxShadow: '0 8px 24px rgba(102, 126, 234, 0.2)'
-            }}>
-              <div style={{ fontSize: 'clamp(32px, 6vw, 48px)', fontWeight: 700, marginBottom: '10px' }}>{stat.number}</div>
-              <div style={{ fontSize: 'clamp(14px, 2vw, 18px)', fontWeight: 600 }}>{stat.label}</div>
+            <div key={idx} className="bg-white text-black p-6 md:p-8 rounded-xl text-center">
+              <div className="text-3xl md:text-4xl font-bold mb-2">{stat.number}</div>
+              <div className="text-sm md:text-base font-bold">{stat.label}</div>
             </div>
           ))}
         </div>

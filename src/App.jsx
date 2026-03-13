@@ -18,6 +18,7 @@ import Hoodies from './pages/Hoodies'
 import CustomEmbroidery from './pages/CustomEmbroidery'
 import OurStory from './pages/OurStory'
 import Contact from './pages/Contact'
+import About from './pages/About'
 import Footer from './components/Footer'
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Route path='/hoodies' element={<Hoodies />} />
           <Route path='/custom-embroidery' element={<CustomEmbroidery />} />
           <Route path='/our-story' element={<OurStory />} />
+          <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
         </Routes>
         <Footer />
