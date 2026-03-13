@@ -252,14 +252,14 @@ const Header = () => {
     menuLine: {
       width: "24px",
       height: "3px",
-      background: "#d4af37",
+      background: "#efeeec",
       transition: "all 0.3s ease"
     },
 
     mobilePanel: {
       display: isOpen ? "block" : "none",
       background: "linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 100%)",
-      borderTop: "2px solid #d4af37",
+      borderTop: "2px solid #e3e1da",
       padding: "20px",
       maxHeight: "calc(100vh - 200px)",
       overflowY: "auto",
@@ -272,7 +272,7 @@ const Header = () => {
       right: "15px",
       background: "transparent",
       border: "none",
-      color: "#d4af37",
+      color: "#dddbd4",
       fontSize: "28px",
       cursor: "pointer",
       fontWeight: "bold",
@@ -425,7 +425,7 @@ const Header = () => {
                 e.target.style.background = "#0a0a0a";
               }}
             >
-              🛒
+              👜
               {cartCount > 0 && <div style={styles.cartBadge}>{cartCount}</div>}
             </button>
           </a>
@@ -586,7 +586,7 @@ const Header = () => {
         <div style={styles.mobileActions}>
           <a href="/cart" style={{ textDecoration: "none", flex: 1 }} onClick={closeMenu}>
             <button style={{ ...styles.iconBtn, width: "100%", justifyContent: "center" }}>
-              🛒 Cart {cartCount > 0 && `(${cartCount})`}
+              👜 Bag {cartCount > 0 && `(${cartCount})`}
             </button>
           </a>
         </div>

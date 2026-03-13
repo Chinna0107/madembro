@@ -16,8 +16,15 @@ function Products() {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const sliderRef = useRef(null);
   const { addToCart } = useCart();
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const productsData = {
     'classic-logo-tshirt': { 
@@ -117,6 +124,10 @@ function Products() {
     setMousePos({ x, y });
   };
 
+  const handleMobileZoom = () => {
+    setZoomLevel(zoomLevel === 1 ? 2 : 1);
+  };
+
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -132,6 +143,18 @@ function Products() {
     { id: 'premium-hoodie', name: 'Premium Hoodie', price: 64.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.6 },
     { id: 'custom-name-sweatshirt', name: 'Custom Name Sweatshirt', price: 59.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.7 },
   ];
+
+  const renderStars = (rating) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className={`text-xl ${i < Math.floor(rating) ? 'text-white' : 'text-gray-600'}`}>
+            ★
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="bg-black min-h-screen p-4 md:p-8">
@@ -152,10 +175,11 @@ function Products() {
           <div className="space-y-4">
             {/* Main Image with Zoom */}
             <div 
-              className="relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800 h-96 md:h-[600px] cursor-zoom-in"
-              onMouseMove={handleMouseMove}
-              onMouseEnter={() => setZoomLevel(1.5)}
-              onMouseLeave={() => setZoomLevel(1)}
+              className={`relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800 h-96 md:h-[600px] ${isMobile ? 'cursor-zoom-in' : 'cursor-zoom-in'}`}
+              onMouseMove={!isMobile ? handleMouseMove : undefined}
+              onMouseEnter={() => !isMobile && setZoomLevel(1.5)}
+              onMouseLeave={() => !isMobile && setZoomLevel(1)}
+              onClick={isMobile ? handleMobileZoom : undefined}
             >
               <img 
                 src={product.images[currentImageIndex]} 
@@ -163,7 +187,7 @@ function Products() {
                 className="w-full h-full object-cover transition-transform duration-300"
                 style={{
                   transform: `scale(${zoomLevel})`,
-                  transformOrigin: `${mousePos.x}% ${mousePos.y}%`
+                  transformOrigin: !isMobile ? `${mousePos.x}% ${mousePos.y}%` : 'center'
                 }}
               />
               {product.discount > 0 && (
@@ -176,6 +200,11 @@ function Products() {
                   Only {product.inStock} left!
                 </div>
               )}
+              {isMobile && (
+                <div className="absolute bottom-4 right-4 bg-white text-black px-3 py-1 rounded-lg text-xs font-bold">
+                  🔍 Tap to zoom
+                </div>
+              )}
             </div>
 
             {/* Thumbnail Navigation */}
@@ -185,6 +214,7 @@ function Products() {
                   key={idx}
                   onClick={() => {
                     setCurrentImageIndex(idx);
+                    setZoomLevel(1);
                     sliderRef.current?.slickGoTo(idx);
                   }}
                   className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
@@ -224,7 +254,7 @@ function Products() {
               {/* Rating */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{'⭐'.repeat(Math.floor(product.rating))}</span>
+                  {renderStars(product.rating)}
                   <span className="text-gray-400 text-sm font-bold">({product.reviews} reviews)</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-500 text-sm font-bold">
@@ -318,11 +348,8 @@ function Products() {
                     : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-1 shadow-lg'
                 }`}
               >
-                {addedToCart ? '✓ Added to Cart' : '🛒 Add to Cart'}
+                {addedToCart ? '✓ Added to Bag' : '👜 Add to Bag'}
               </button>
-              {/* <button className="w-full py-4 rounded-lg font-bold text-lg border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300">
-                💳 Buy Now
-              </button> */}
             </div>
 
             {/* Trust Badges */}
@@ -340,17 +367,6 @@ function Products() {
                 <span>{product.warranty}</span>
               </div>
             </div>
-
-            {/* Share Section */}
-            {/* <div className="border-t border-gray-700 pt-4">
-              <p className="text-gray-400 text-sm mb-3">Share this product:</p>
-              <div className="flex gap-3">
-                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">📘</button>
-                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">𝕏</button>
-                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">📧</button>
-                <button className="p-3 bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors text-xl">🔗</button>
-              </div>
-            </div> */}
           </div>
         </div>
 
@@ -408,8 +424,8 @@ function Products() {
                 <div className="flex items-center gap-8 mb-8 pb-8 border-b border-gray-700">
                   <div className="text-5xl font-bold text-white">{product.rating}</div>
                   <div>
-                    <div className="text-2xl mb-2">{'⭐'.repeat(Math.floor(product.rating))}</div>
-                    <div className="text-gray-400 text-sm">Based on {product.reviews} verified reviews</div>
+                    {renderStars(product.rating)}
+                    <div className="text-gray-400 text-sm mt-2">Based on {product.reviews} verified reviews</div>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -424,7 +440,7 @@ function Products() {
                           <span className="font-bold text-white">{review.name}</span>
                           {review.verified && <span className="ml-2 text-xs bg-green-900 text-green-400 px-2 py-1 rounded">✓ Verified</span>}
                         </div>
-                        <span>{'⭐'.repeat(review.rating)}</span>
+                        {renderStars(review.rating)}
                       </div>
                       <p className="text-gray-300 text-sm">{review.comment}</p>
                     </div>
@@ -452,10 +468,6 @@ function Products() {
                     </div>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-3">Return Policy</h3>
-                  <p className="text-gray-300">30-day hassle-free returns. If you're not satisfied with your purchase, simply return it within 30 days for a full refund.</p>
-                </div>
               </div>
             )}
           </div>
@@ -474,8 +486,8 @@ function Products() {
                       alt={prod.name} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
-                    <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg text-sm font-bold">
-                      ⭐ {prod.rating}
+                    <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-1">
+                      ★ {prod.rating}
                     </div>
                   </div>
                   <div className="p-4">
@@ -484,27 +496,6 @@ function Products() {
                   </div>
                 </div>
               </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-12 bg-gray-900 p-8 rounded-xl border border-gray-800">
-          <h2 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
-          <div className="space-y-4">
-            {[
-              { q: 'What is the material composition?', a: 'This product is made from premium materials as specified in the specifications tab.' },
-              { q: 'How do I care for this product?', a: 'Please refer to the care instructions in the specifications tab for detailed washing and maintenance guidelines.' },
-              { q: 'Is this product available in other colors?', a: 'Yes, this product is available in multiple colors as shown in the color selection above.' },
-              { q: 'What is your return policy?', a: 'We offer a 30-day hassle-free return policy. See the shipping tab for more details.' }
-            ].map((faq, idx) => (
-              <details key={idx} className="group border border-gray-700 rounded-lg p-4 cursor-pointer hover:border-white transition-colors">
-                <summary className="font-bold text-white flex justify-between items-center">
-                  {faq.q}
-                  <span className="text-xl group-open:rotate-180 transition-transform">▼</span>
-                </summary>
-                <p className="text-gray-400 mt-3">{faq.a}</p>
-              </details>
             ))}
           </div>
         </div>

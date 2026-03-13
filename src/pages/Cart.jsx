@@ -22,10 +22,10 @@ const Cart = () => {
     return (
       <div className="bg-black min-h-screen p-4 md:p-8">
         <div className="max-w-4xl mx-auto text-center pt-16">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Your Cart is Empty</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Your Bag is Empty</h1>
           <p className="text-gray-400 mb-8 text-base md:text-lg">Add some products to get started!</p>
           <button
-            onClick={() => navigate('/tshirts')}
+            onClick={() => navigate('/')}
             className="bg-white text-black px-8 py-3 font-bold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1"
           >
             Continue Shopping
@@ -38,7 +38,7 @@ const Cart = () => {
   return (
     <div className="bg-black min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-12">Shopping Cart</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-12">Shopping Bag</h1>
 
         <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'} gap-6 md:gap-8`}>
           {/* Cart Items */}

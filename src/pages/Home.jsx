@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const Home = () => {
   const categories = [
@@ -10,34 +13,33 @@ const Home = () => {
   ];
 
   const newArrivals = [
-    { id: 1, name: 'Embroidered Rose Hoodie', price: 59.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80' },
-    { id: 2, name: 'Classic Logo T-Shirt', price: 29.99, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop' },
-    { id: 3, name: 'Premium Sweatshirt', price: 49.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80' },
-    { id: 4, name: 'Custom Name Hoodie', price: 64.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80' }
+    { id: 1, name: 'Embroidered Rose Hoodie', price: 59.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', rating: 4.5 },
+    { id: 2, name: 'Classic Logo T-Shirt', price: 29.99, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop', rating: 4.3 },
+    { id: 3, name: 'Premium Sweatshirt', price: 49.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', rating: 4.6 },
+    { id: 4, name: 'Custom Name Hoodie', price: 64.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', rating: 4.7 }
   ];
 
   const bestSellers = [
-    { id: 1, name: 'Signature Embroidered Tee', price: 34.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 1250 },
-    { id: 2, name: 'Classic Black Hoodie', price: 54.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 980 },
-    { id: 3, name: 'Vintage Sweatshirt', price: 44.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 850 },
-    { id: 4, name: 'Embroidered Logo Hoodie', price: 59.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 720 }
+    { id: 1, name: 'Signature Embroidered Tee', price: 34.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 1250, rating: 4.8 },
+    { id: 2, name: 'Classic Black Hoodie', price: 54.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 980, rating: 4.5 },
+    { id: 3, name: 'Vintage Sweatshirt', price: 44.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 850, rating: 4.4 },
+    { id: 4, name: 'Embroidered Logo Hoodie', price: 59.99, image: 'https://img.freepik.com/free-photo/row-hoodies-with-different-colors-one-that-says-hoodie_188544-43266.jpg?semt=ais_rp_progressive&w=740&q=80', sales: 720, rating: 4.6 }
+  ];
+
+  const heroImages = [
+    'https://png.pngtree.com/thumb_back/fh260/background/20230720/pngtree-yellow-background-with-3d-t-shirts-rendered-image_3711716.jpg',
+    'https://images.unsplash.com/photo-1556821552-7f41c5d440db?w=1200&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=1200&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?w=1200&h=600&fit=crop'
   ];
 
   const [gridColumns, setGridColumns] = React.useState('grid-cols-4');
-  const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setGridColumns('grid-cols-1');
-        setIsMobile(true);
-      } else if (window.innerWidth < 1024) {
-        setGridColumns('grid-cols-2');
-        setIsMobile(true);
-      } else {
-        setGridColumns('grid-cols-4');
-        setIsMobile(false);
-      }
+      if (window.innerWidth < 640) setGridColumns('grid-cols-1');
+      else if (window.innerWidth < 1024) setGridColumns('grid-cols-2');
+      else setGridColumns('grid-cols-4');
     };
 
     window.addEventListener('resize', handleResize);
@@ -45,251 +47,84 @@ const Home = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const ProductCard = ({ product, isBestSeller = false }) => (
-    <Link to={`/product/classic-logo-tshirt`} style={{ textDecoration: 'none' }}>
-      <div style={{
-        backgroundColor: '#1a1a1a',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        boxShadow: '0 4px 12px rgba(255, 255, 255, 0.1)',
-        transition: 'all 0.3s ease',
-        cursor: 'pointer',
-        border: '2px solid #333',
-        position: 'relative',
-        height: '100%'
-      }}
-      onMouseEnter={(e) => {
-        if (!isMobile) {
-          e.currentTarget.style.transform = 'translateY(-12px)';
-          e.currentTarget.style.boxShadow = '0 16px 32px rgba(255, 255, 255, 0.2)';
-          e.currentTarget.style.borderColor = '#fff';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isMobile) {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 255, 255, 0.1)';
-          e.currentTarget.style.borderColor = '#333';
-        }
-      }}>
-        {isBestSeller && (
-          <div style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            backgroundColor: '#fff',
-            color: '#000',
-            padding: '6px 12px',
-            borderRadius: '20px',
-            fontSize: '12px',
-            fontWeight: 'bold',
-            zIndex: 10,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-          }}>
-            🔥 Best Seller
-          </div>
-        )}
-        <div style={{ position: 'relative', overflow: 'hidden', height: '250px' }}>
-          <img 
-            src={product.image} 
-            alt={product.name} 
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (!isMobile) e.target.style.transform = 'scale(1.08)';
-            }}
-            onMouseLeave={(e) => {
-              if (!isMobile) e.target.style.transform = 'scale(1)';
-            }}
-          />
-        </div>
-        <div style={{ padding: '16px' }}>
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: 600,
-            margin: '0 0 8px 0',
-            color: '#fff',
-            lineHeight: '1.3',
-            minHeight: '40px'
-          }}>
-            {product.name}
-          </h3>
-          <p style={{
-            fontSize: '18px',
-            fontWeight: 700,
-            color: '#fff',
-            margin: '0',
-            letterSpacing: '0.5px'
-          }}>
-            ${product.price}
-          </p>
-        </div>
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    arrows: false,
+    fade: true
+  };
+
+  const renderStars = (rating) => {
+    return (
+      <div className="flex items-center gap-0.5">
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className={`text-sm ${i < Math.floor(rating) ? 'text-white' : 'text-gray-600'}`}>
+            ★
+          </span>
+        ))}
       </div>
-    </Link>
-  );
+    );
+  };
 
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh' }}>
-      {/* Hero Section */}
-      <section 
-        style={{
-          width: '100%',
-          height: 'clamp(400px, 60vh, 600px)',
-          backgroundImage: 'url(https://png.pngtree.com/thumb_back/fh260/background/20230720/pngtree-yellow-background-with-3d-t-shirts-rendered-image_3711716.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden'
-        }}
-      >
-        {/* Overlay */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 10
-        }}></div>
-        
-        {/* Hero Content */}
-        <div style={{
-          position: 'relative',
-          zIndex: 20,
-          textAlign: 'center',
-          color: '#fff',
-          padding: '20px'
-        }}>
-          <h1 style={{
-            fontSize: 'clamp(32px, 8vw, 56px)',
-            fontWeight: 'bold',
-            marginBottom: '16px',
-            textShadow: '0 4px 12px rgba(0, 0, 0, 0.5)'
-          }}>
-            Premium Embroidery Clothing
-          </h1>
-          <p style={{
-            fontSize: 'clamp(16px, 4vw, 24px)',
-            marginBottom: '32px',
-            textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
-          }}>
-            Handcrafted Quality, Timeless Style
-          </p>
-          <button style={{
-            backgroundColor: '#fff',
-            color: '#000',
-            padding: 'clamp(12px, 2vw, 16px) clamp(24px, 5vw, 48px)',
-            fontSize: 'clamp(14px, 2vw, 18px)',
-            fontWeight: 'bold',
-            borderRadius: '25px',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#f0f0f0';
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.4)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#fff';
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-          }}>
-            Explore Collection
-          </button>
-        </div>
+    <div className="bg-black min-h-screen">
+      {/* Hero Carousel */}
+      <section className="relative w-full h-screen md:h-[600px]">
+        <Slider {...sliderSettings}>
+          {heroImages.map((img, idx) => (
+            <div key={idx} className="relative w-full h-screen md:h-[600px]">
+              <img 
+                src={img} 
+                alt={`Hero ${idx + 1}`}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50"></div>
+            </div>
+          ))}
+        </Slider>
 
-        {/* Scroll Indicator */}
-        <div style={{
-          position: 'absolute',
-          bottom: '30px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 30,
-          animation: 'bounce 2s infinite',
-          fontSize: '28px',
-          fontWeight: 'bold',
-          color: '#fff',
-          pointerEvents: 'none'
-        }}>
-          ↓
+        {/* Hero Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className="text-center text-white px-4 md:px-8">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white drop-shadow-lg">
+              Premium Embroidery Clothing
+            </h1>
+            <p className="text-lg md:text-2xl mb-8 text-white drop-shadow-md">
+              Handcrafted Quality, Timeless Style
+            </p>
+            <button className="bg-white text-black px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+              Explore Collection
+            </button>
+          </div>
+          
+          {/* Scroll Down Arrow */}
+          <div className="absolute bottom-12 animate-bounce text-white text-3xl font-bold pointer-events-none">
+            ↓
+          </div>
         </div>
       </section>
 
       {/* Shop by Category */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: 'clamp(40px, 8vw, 60px) clamp(16px, 5vw, 40px)' }}>
-        <h2 style={{
-          fontSize: 'clamp(28px, 6vw, 36px)',
-          fontWeight: 'bold',
-          textAlign: 'center',
-          color: '#fff',
-          marginBottom: '40px'
-        }}>
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-12">
           Shop by Category
         </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-          gap: '24px'
-        }}>
+        <div className={`grid ${gridColumns} gap-4 md:gap-6`}>
           {categories.map(cat => (
-            <a key={cat.id} href={cat.link} style={{ textDecoration: 'none' }}>
-              <div style={{
-                backgroundColor: '#1a1a1a',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(255, 255, 255, 0.1)',
-                transition: 'all 0.3s ease',
-                border: '2px solid #333',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                if (!isMobile) {
-                  e.currentTarget.style.transform = 'translateY(-12px)';
-                  e.currentTarget.style.boxShadow = '0 16px 32px rgba(255, 255, 255, 0.2)';
-                  e.currentTarget.style.borderColor = '#fff';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isMobile) {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 255, 255, 0.1)';
-                  e.currentTarget.style.borderColor = '#333';
-                }
-              }}>
-                <div style={{ position: 'relative', overflow: 'hidden', height: '200px' }}>
-                  <img 
-                    src={cat.image} 
-                    alt={cat.name} 
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isMobile) e.target.style.transform = 'scale(1.08)';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isMobile) e.target.style.transform = 'scale(1)';
-                    }}
-                  />
-                </div>
-                <div style={{ padding: '16px', textAlign: 'center' }}>
-                  <h3 style={{
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    color: '#fff',
-                    margin: 0
-                  }}>
+            <a key={cat.id} href={cat.link} className="no-underline text-white group">
+              <div className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-800 hover:border-white cursor-pointer">
+                <img 
+                  src={cat.image} 
+                  alt={cat.name} 
+                  className="w-full h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="p-4 md:p-6 text-center">
+                  <h3 className="text-lg md:text-xl font-bold text-white">
                     {cat.name}
                   </h3>
                 </div>
@@ -300,57 +135,96 @@ const Home = () => {
       </section>
 
       {/* New Arrivals */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: 'clamp(40px, 8vw, 60px) clamp(16px, 5vw, 40px)' }}>
-        <h2 style={{
-          fontSize: 'clamp(28px, 6vw, 36px)',
-          fontWeight: 'bold',
-          textAlign: 'center',
-          color: '#fff',
-          marginBottom: '40px'
-        }}>
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-12">
           New Arrivals
         </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-          gap: '24px'
-        }}>
+        <div className={`grid ${gridColumns} gap-4 md:gap-6`}>
           {newArrivals.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <Link key={product.id} to={`/product/classic-logo-tshirt`} className="no-underline text-white group">
+              <div className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-800 hover:border-white cursor-pointer">
+                <div className="relative">
+                  <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    className="w-full h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-1">
+                    ★ {product.rating}
+                  </div>
+                </div>
+                <div className="p-4 md:p-6">
+                  <h3 className="text-base md:text-lg font-bold text-white mb-2 line-clamp-2">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <p className="text-lg md:text-xl font-bold text-white">
+                      ${product.price}
+                    </p>
+                    {renderStars(product.rating)}
+                  </div>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
       {/* Best Sellers */}
-      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: 'clamp(40px, 8vw, 60px) clamp(16px, 5vw, 40px)' }}>
-        <h2 style={{
-          fontSize: 'clamp(28px, 6vw, 36px)',
-          fontWeight: 'bold',
-          textAlign: 'center',
-          color: '#fff',
-          marginBottom: '40px'
-        }}>
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-12">
           Best Sellers
         </h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-          gap: '24px'
-        }}>
+        <div className={`grid ${gridColumns} gap-4 md:gap-6`}>
           {bestSellers.map(product => (
-            <ProductCard key={product.id} product={product} isBestSeller={true} />
+            <Link key={product.id} to={`/product/classic-black-hoodie`} className="no-underline text-white group relative">
+              <div className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-800 hover:border-white cursor-pointer">
+                <div className="relative">
+                  <span className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-lg text-xs md:text-sm font-bold z-10">
+                    🔥 Best Seller
+                  </span>
+                  <img 
+                    src={product.image} 
+                    alt={product.name} 
+                    className="w-full h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-1">
+                    ★ {product.rating}
+                  </div>
+                </div>
+                <div className="p-4 md:p-6">
+                  <h3 className="text-base md:text-lg font-bold text-white mb-2 line-clamp-2">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center justify-between">
+                    <p className="text-lg md:text-xl font-bold text-white">
+                      ${product.price}
+                    </p>
+                    {renderStars(product.rating)}
+                  </div>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
       <style>{`
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateX(-50%) translateY(0);
-          }
-          50% {
-            transform: translateX(-50%) translateY(10px);
-          }
+        .slick-dots {
+          bottom: 20px !important;
+        }
+
+        .slick-dots li button:before {
+          color: white !important;
+          font-size: 12px !important;
+        }
+
+        .slick-dots li.slick-active button:before {
+          color: white !important;
+        }
+
+        .slick-prev, .slick-next {
+          display: none !important;
         }
       `}</style>
     </div>
