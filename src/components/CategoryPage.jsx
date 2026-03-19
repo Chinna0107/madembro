@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import config from '../config';
-
-const API_BASE_URL = config.apiUrl;
+import { useFetch } from '../hooks/useFetch';
 
 const PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect fill="%23333" width="300" height="300"/%3E%3Ctext x="50%25" y="50%25" font-size="14" fill="%23999" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
 
@@ -26,30 +24,11 @@ const ProductCard = ({ product }) => (
 );
 
 const CategoryPage = ({ category, title }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: all = [], loading } = useFetch('/admin/public/products');
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/admin/public/products`);
-        if (res.ok) {
-          const all = await res.json();
-          setProducts(all.filter(p => p.category?.toLowerCase() === category.toLowerCase()));
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [category]);
-
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const products = (all || []).filter(p => p.category?.toLowerCase() === category.toLowerCase());
+  const filtered = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="bg-black min-h-screen">

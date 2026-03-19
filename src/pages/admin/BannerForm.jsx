@@ -55,51 +55,51 @@ const BannerForm = () => {
     }
   };
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (loading) return <p className="text-center py-10 text-gray-400">Loading...</p>;
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="bg-black min-h-screen p-6">
       <div className="max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">{id ? 'Edit Banner' : 'Add Banner'}</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{id ? 'Edit Banner' : 'Add Banner'}</h1>
 
         {message && (
-          <div className={`px-4 py-3 rounded mb-4 border ${message.includes('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`}>
+          <div className={`px-4 py-3 rounded mb-4 border ${message.includes('Error') ? 'bg-red-900 border-red-700 text-red-300' : 'bg-green-900 border-green-700 text-green-300'}`}>
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow space-y-5">
+        <form onSubmit={handleSubmit} className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-5">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-semibold text-gray-300 mb-1">Title</label>
             <input type="text" name="title" value={formData.title} onChange={handleChange} required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-400" placeholder="Banner title" />
+              className="w-full px-4 py-2 bg-black border border-gray-700 text-white rounded-lg text-sm focus:outline-none focus:border-white placeholder-gray-600" placeholder="Banner title" />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Image URL</label>
+            <label className="block text-sm font-semibold text-gray-300 mb-1">Image URL</label>
             <input type="url" name="image_url" value={formData.image_url} onChange={handleChange} required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-400" placeholder="https://..." />
+              className="w-full px-4 py-2 bg-black border border-gray-700 text-white rounded-lg text-sm focus:outline-none focus:border-white placeholder-gray-600" placeholder="https://..." />
             {formData.image_url && <img src={formData.image_url} alt="Preview" className="mt-3 w-full max-h-48 object-cover rounded-lg" />}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Link (optional)</label>
+            <label className="block text-sm font-semibold text-gray-300 mb-1">Link (optional)</label>
             <input type="text" name="link" value={formData.link} onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-400" placeholder="/products" />
+              className="w-full px-4 py-2 bg-black border border-gray-700 text-white rounded-lg text-sm focus:outline-none focus:border-white placeholder-gray-600" placeholder="/products" />
           </div>
 
           <div className="flex items-center gap-2">
-            <input type="checkbox" name="active" id="active" checked={formData.active} onChange={handleChange} className="w-4 h-4" />
-            <label htmlFor="active" className="text-sm font-semibold text-gray-700">Active</label>
+            <input type="checkbox" name="active" id="active" checked={formData.active} onChange={handleChange} className="w-4 h-4 accent-white" />
+            <label htmlFor="active" className="text-sm font-semibold text-gray-300">Active</label>
           </div>
 
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={submitting}
-              className="flex-1 py-2 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:opacity-50">
+              className="flex-1 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50">
               {submitting ? 'Saving...' : 'Save Banner'}
             </button>
             <button type="button" onClick={() => navigate('/admin/banners')}
-              className="flex-1 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors">
+              className="flex-1 py-2 border border-gray-700 text-white rounded-lg font-semibold hover:border-white transition-colors">
               Cancel
             </button>
           </div>

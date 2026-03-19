@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import config from '../config';
-
-const API_BASE_URL = config.apiUrl;
+import { useFetch } from '../hooks/useFetch';
 
 const defaultHeroImages = [
   'https://png.pngtree.com/thumb_back/fh260/background/20230720/pngtree-yellow-background-with-3d-t-shirts-rendered-image_3711716.jpg',
@@ -69,28 +67,10 @@ const ProductCard = ({ product, badge }) => (
 );
 
 const Home = () => {
-  const [banners, setBanners] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: banners = [], loading: bannersLoading } = useFetch('/admin/public/banners');
+  const { data: products = [], loading: productsLoading } = useFetch('/admin/public/products');
+  const loading = bannersLoading || productsLoading;
   const [gridColumns, setGridColumns] = useState('grid-cols-4');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [bannersRes, productsRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/admin/public/banners`),
-          fetch(`${API_BASE_URL}/admin/public/products`)
-        ]);
-        if (bannersRes.ok) setBanners(await bannersRes.json());
-        if (productsRes.ok) setProducts(await productsRes.json());
-      } catch (err) {
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,9 +83,9 @@ const Home = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const heroImages = banners.length > 0 ? banners.map(b => b.image_url) : defaultHeroImages;
-  const newArrivals = products.slice(0, 4);
-  const bestSellers = products.slice(-4).reverse();
+  const heroImages = (banners || []).length > 0 ? (banners || []).map(b => b.image_url) : defaultHeroImages;
+  const newArrivals = (products || []).slice(0, 4);
+  const bestSellers = (products || []).slice(-4).reverse();
 
   return (
     <div className="bg-black min-h-screen">

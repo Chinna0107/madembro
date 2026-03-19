@@ -1,38 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useFetch } from '../../hooks/useFetch';
 import config from '../../config';
 
 const UserDashboard = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const userEmail = localStorage.getItem('userEmail');
   const userName = localStorage.getItem('userName') || 'User';
 
+  const endpoint = userEmail ? `/orders?email=${encodeURIComponent(userEmail)}` : null;
+  const { data: orders = [], loading } = useFetch(endpoint || '', { deps: [userEmail] });
+
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    if (!isLoggedIn || !userEmail) {
-      navigate('/login');
-      return;
-    }
-    fetchOrders();
+    if (!isLoggedIn || !userEmail) navigate('/login');
+    else console.log('User Email:', userEmail);
   }, []);
-
-  const fetchOrders = async () => {
-    try {
-      console.log('User Email:', userEmail);
-      const response = await fetch(`${config.apiUrl}/orders?email=${encodeURIComponent(userEmail)}`);
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Orders fetched:', result);
-        setOrders(Array.isArray(result) ? result : []);
-      }
-    } catch (err) {
-      console.error('Error fetching orders:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleLogout = () => {
     localStorage.clear();

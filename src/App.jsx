@@ -69,7 +69,7 @@ function App() {
         <Route path='/tshirts' element={<TShirts />} />
         <Route path='/sweatshirts' element={<Sweatshirts />} />
         <Route path='/hoodies' element={<Hoodies />} />
-        <Route path='/custom-embroidery' element={<CustomEmbroidery />} />
+        <Route path='/custom' element={<CustomEmbroidery />} />
         <Route path='/our-story' element={<OurStory />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />

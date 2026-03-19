@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import config from '../config';
-
-const API_BASE_URL = config.apiUrl;
+import { useFetch } from '../hooks/useFetch';
 
 const FALLBACK_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -18,9 +16,18 @@ const renderStars = (rating) => (
 function Products() {
   const { name } = useParams();
   const { addToCart } = useCart();
+  const { data, loading } = useFetch('/admin/public/products');
+  const allProducts = data || [];
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const product = allProducts.find(p =>
+    String(p.id) === String(name) ||
+    p.name.toLowerCase().replace(/\s+/g, '-') === name
+  ) || null;
+
+  const relatedProducts = product
+    ? allProducts.filter(p => p.id !== product.id && p.category === product.category).slice(0, 4)
+    : [];
+
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -30,7 +37,6 @@ function Products() {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [relatedProducts, setRelatedProducts] = useState([]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -39,37 +45,12 @@ function Products() {
   }, []);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${API_BASE_URL}/admin/public/products`);
-        if (res.ok) {
-          const all = await res.json();
-          const found = all.find(p =>
-            String(p.id) === String(name) ||
-            p.name.toLowerCase().replace(/\s+/g, '-') === name
-          );
-          if (found) {
-            setProduct(found);
-            // set defaults from product data
-            const colors = found.colors || [];
-            const sizes = found.sizes?.length > 0 ? found.sizes : FALLBACK_SIZES;
-            setSelectedColor(colors[0] || '');
-            setSelectedSize(sizes[0] || '');
-            setCurrentImageIndex(0);
-            setRelatedProducts(
-              all.filter(p => p.id !== found.id && p.category === found.category).slice(0, 4)
-            );
-          }
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProduct();
-  }, [name]);
+    if (product) {
+      setSelectedColor(product.colors?.[0] || '');
+      setSelectedSize((product.sizes?.length > 0 ? product.sizes : FALLBACK_SIZES)[0] || '');
+      setCurrentImageIndex(0);
+    }
+  }, [product?.id]);
 
   // update images when color changes
   const getImagesForColor = (color) => {

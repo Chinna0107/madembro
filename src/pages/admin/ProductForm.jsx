@@ -117,39 +117,36 @@ const ProductForm = () => {
     }
   };
 
-  if (loading) return <p className="text-center py-10 text-gray-500">Loading...</p>;
+  if (loading) return <p className="text-center py-10 text-gray-400">Loading...</p>;
 
-  const inputCls = "w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-400";
-  const labelCls = "block text-sm font-semibold text-gray-700 mb-1";
+  const inputCls = "w-full px-4 py-2 bg-black border border-gray-700 text-white rounded-lg text-sm focus:outline-none focus:border-white placeholder-gray-600";
+  const labelCls = "block text-sm font-semibold text-gray-300 mb-1";
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="bg-black min-h-screen p-6">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">{id ? 'Edit Product' : 'Add Product'}</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{id ? 'Edit Product' : 'Add Product'}</h1>
 
         {message && (
-          <div className={`px-4 py-3 rounded mb-4 border ${message.includes('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`}>
+          <div className={`px-4 py-3 rounded mb-4 border ${message.includes('Error') ? 'bg-red-900 border-red-700 text-red-300' : 'bg-green-900 border-green-700 text-green-300'}`}>
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow space-y-5">
+        <form onSubmit={handleSubmit} className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-5">
 
-          {/* Name */}
           <div>
             <label className={labelCls}>Product Name *</label>
             <input type="text" name="name" value={formData.name} onChange={handleChange} required
               className={inputCls} placeholder="e.g. Classic Oversized Tee" />
           </div>
 
-          {/* Description */}
           <div>
             <label className={labelCls}>Description</label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="3"
               className={`${inputCls} resize-none`} placeholder="Product description..." />
           </div>
 
-          {/* Price & Original Price */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Price (₹) *</label>
@@ -157,13 +154,12 @@ const ProductForm = () => {
                 required step="0.01" min="0" className={inputCls} placeholder="0.00" />
             </div>
             <div>
-              <label className={labelCls}>Original Price (₹) <span className="text-gray-400 font-normal">for strikethrough</span></label>
+              <label className={labelCls}>Original Price (₹) <span className="text-gray-600 font-normal">for strikethrough</span></label>
               <input type="number" name="original_price" value={formData.original_price} onChange={handleChange}
                 step="0.01" min="0" className={inputCls} placeholder="0.00" />
             </div>
           </div>
 
-          {/* Category & Stock */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Category</label>
@@ -181,16 +177,15 @@ const ProductForm = () => {
             </div>
           </div>
 
-          {/* Sizes */}
-          <div className="border-t pt-5">
+          <div className="border-t border-gray-800 pt-5">
             <label className={labelCls}>Available Sizes</label>
             <div className="flex flex-wrap gap-2 mt-2">
               {SIZES.map(size => (
                 <button key={size} type="button" onClick={() => toggleSize(size)}
                   className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
                     formData.sizes.includes(size)
-                      ? 'bg-indigo-500 text-white border-indigo-500'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-gray-400 border-gray-700 hover:border-white hover:text-white'
                   }`}>
                   {size}
                 </button>
@@ -198,58 +193,56 @@ const ProductForm = () => {
             </div>
           </div>
 
-          {/* Features */}
-          <div className="border-t pt-5">
+          <div className="border-t border-gray-800 pt-5">
             <label className={labelCls}>Features / Highlights</label>
             <div className="flex gap-2 mb-3">
               <input type="text" value={newFeature} onChange={e => setNewFeature(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
                 placeholder="e.g. 100% Cotton, Oversized Fit"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-400" />
+                className={inputCls} />
               <button type="button" onClick={addFeature}
-                className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm font-semibold hover:bg-indigo-600 transition-colors">
+                className="px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">
                 Add
               </button>
             </div>
             {formData.features.length > 0 && (
               <ul className="space-y-1">
                 {formData.features.map((f, i) => (
-                  <li key={i} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm">
-                    <span className="text-gray-700">• {f}</span>
+                  <li key={i} className="flex items-center justify-between bg-black border border-gray-800 rounded-lg px-3 py-2 text-sm">
+                    <span className="text-gray-300">• {f}</span>
                     <button type="button" onClick={() => removeFeature(i)}
-                      className="text-red-400 hover:text-red-600 text-xs font-semibold ml-2">✕</button>
+                      className="text-red-400 hover:text-red-300 text-xs font-semibold ml-2">✕</button>
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          {/* Colors & Images */}
-          <div className="border-t pt-5">
+          <div className="border-t border-gray-800 pt-5">
             <label className={labelCls}>
-              Colors & Images <span className="text-gray-400 font-normal">(3 images per color)</span>
+              Colors & Images <span className="text-gray-600 font-normal">(3 images per color)</span>
             </label>
             <div className="flex gap-2 mb-4 mt-2">
               <input type="text" value={newColor} onChange={e => setNewColor(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addColor())}
                 placeholder="e.g. Black, White, Navy Blue"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-400" />
+                className={inputCls} />
               <button type="button" onClick={addColor}
-                className="px-4 py-2 bg-indigo-500 text-white rounded-lg text-sm font-semibold hover:bg-indigo-600 transition-colors">
+                className="px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">
                 Add
               </button>
             </div>
 
             {formData.colors.length === 0 ? (
-              <p className="text-gray-400 text-sm italic">No colors added yet.</p>
+              <p className="text-gray-600 text-sm italic">No colors added yet.</p>
             ) : (
               <div className="space-y-4">
                 {formData.colors.map(color => (
-                  <div key={color} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div key={color} className="border border-gray-700 rounded-lg p-4 bg-black">
                     <div className="flex justify-between items-center mb-3">
-                      <span className="font-semibold text-gray-700">{color}</span>
+                      <span className="font-semibold text-white">{color}</span>
                       <button type="button" onClick={() => removeColor(color)}
-                        className="px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600 transition-colors">
+                        className="px-3 py-1 bg-red-700 text-white rounded text-xs hover:bg-red-600 transition-colors">
                         Remove
                       </button>
                     </div>
@@ -261,7 +254,7 @@ const ProductForm = () => {
                             value={colorImages[color]?.[`image${num}`] || ''}
                             onChange={e => handleColorImageChange(color, num, e.target.value)}
                             placeholder="https://..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:border-indigo-400" />
+                            className="w-full px-3 py-2 bg-black border border-gray-700 text-white rounded-lg text-xs focus:outline-none focus:border-white placeholder-gray-600" />
                           {colorImages[color]?.[`image${num}`] && (
                             <img src={colorImages[color][`image${num}`]} alt={`${color} ${num}`}
                               className="mt-2 w-full h-20 object-cover rounded-lg"
@@ -276,21 +269,19 @@ const ProductForm = () => {
             )}
           </div>
 
-          {/* Active */}
-          <div className="flex items-center gap-2 border-t pt-4">
+          <div className="flex items-center gap-2 border-t border-gray-800 pt-4">
             <input type="checkbox" name="active" id="active" checked={formData.active}
-              onChange={handleChange} className="w-4 h-4 accent-indigo-500" />
-            <label htmlFor="active" className="text-sm font-semibold text-gray-700">Active (visible to users)</label>
+              onChange={handleChange} className="w-4 h-4 accent-white" />
+            <label htmlFor="active" className="text-sm font-semibold text-gray-300">Active (visible to users)</label>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={submitting}
-              className="flex-1 py-2 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:opacity-50">
+              className="flex-1 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50">
               {submitting ? 'Saving...' : id ? 'Update Product' : 'Create Product'}
             </button>
             <button type="button" onClick={() => navigate('/admin/products')}
-              className="flex-1 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors">
+              className="flex-1 py-2 border border-gray-700 text-white rounded-lg font-semibold hover:border-white transition-colors">
               Cancel
             </button>
           </div>

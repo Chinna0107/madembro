@@ -336,7 +336,7 @@ const Header = () => {
     <header style={styles.header}>
       <div style={styles.promoBar}>
         🎉 Limited drop: stitched essentials for spring.
-        <a href="#new" style={styles.promoLink}>
+        <a href="/" style={styles.promoLink}>
           Shop new arrivals →
         </a>
       </div>
@@ -408,7 +408,7 @@ const Header = () => {
             Hoodies
           </a>
           <a 
-            href="/custom-embroidery" 
+            href="/custom" 
             style={styles.navLink}
             onMouseEnter={(e) => e.target.style.color = "#ccc"}
             onMouseLeave={(e) => e.target.style.color = "#fff"}
@@ -555,7 +555,7 @@ const Header = () => {
             Hoodies
           </a>
           <a 
-            href="/custom-embroidery" 
+            href="/custom" 
             style={styles.mobileLink}
             onClick={closeMenu}
             onMouseEnter={(e) => {
