@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 const Login = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -81,26 +83,75 @@ const Login = () => {
     setLoading(true);
     setMessage('');
 
-    setTimeout(() => {
+    try {
       if (isLogin) {
+        // Login API call
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Login failed');
+        }
+
+        const data = await response.json();
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userName', formData.email.split('@')[0]);
+        localStorage.setItem('userName', data.user?.firstName || formData.email.split('@')[0]);
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userRole', data.user?.role || 'user');
         setMessage('Login successful! Redirecting...');
         setTimeout(() => {
-          navigate('/');
+          if (data.user?.role === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/user/dashboard');
+          }
           window.location.reload();
         }, 1500);
       } else {
+        // Register API call
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Registration failed');
+        }
+
+        const data = await response.json();
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userName', formData.firstName);
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userRole', 'user');
         setMessage('Account created successfully! Redirecting...');
         setTimeout(() => {
-          navigate('/');
+          navigate('/user/dashboard');
           window.location.reload();
         }, 1500);
       }
+    } catch (error) {
+      setMessage(error.message || 'An error occurred. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (

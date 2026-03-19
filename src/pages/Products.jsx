@@ -1,117 +1,78 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Slider from 'react-slick';
 import { useCart } from '../context/CartContext';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+const PLACEHOLDER_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="600"%3E%3Crect fill="%23333" width="600" height="600"/%3E%3Ctext x="50%" y="50%" font-size="20" fill="%23999" text-anchor="middle" dy=".3em"%3ENo Image Available%3C/text%3E%3C/svg%3E';
+const PLACEHOLDER_SMALL = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect fill="%23333" width="300" height="300"/%3E%3Ctext x="50%" y="50%" font-size="14" fill="%23999" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
+
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const COLORS = ['Black', 'White', 'Navy', 'Grey', 'Olive'];
+
+const renderStars = (rating) => (
+  <div className="flex items-center gap-1">
+    {[...Array(5)].map((_, i) => (
+      <span key={i} className={`text-xl ${i < Math.floor(rating) ? 'text-white' : 'text-gray-600'}`}>★</span>
+    ))}
+  </div>
+);
 
 function Products() {
   const { name } = useParams();
+  const { addToCart } = useCart();
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Black');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [activeTab, setActiveTab] = useState('description');
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const sliderRef = useRef(null);
-  const { addToCart } = useCart();
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const productsData = {
-    'classic-logo-tshirt': { 
-      name: 'Classic Logo T-Shirt', 
-      price: 29.99, 
-      originalPrice: 39.99,
-      description: 'Premium quality t-shirt with classic logo embroidery. Made from 100% cotton for ultimate comfort and durability. Perfect for everyday wear with a timeless design.', 
-      rating: 4.5, 
-      reviews: 128, 
-      inStock: 45,
-      sku: 'CLT-001',
-      features: ['100% Cotton', 'Classic Logo Embroidery', 'Machine Washable', 'Unisex Fit', 'Breathable Fabric'],
-      specifications: {
-        'Material': '100% Premium Cotton',
-        'Weight': '180 GSM',
-        'Care': 'Machine wash cold, tumble dry low',
-        'Fit': 'Unisex Regular Fit',
-        'Embroidery': 'Front chest logo'
-      },
-      colors: ['Black', 'White', 'Navy', 'Gray'],
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      shipping: 'Free shipping on orders over $100',
-      returns: '30-day hassle-free returns',
-      warranty: '1-year quality guarantee'
-    },
-    'embroidered-rose-hoodie': { 
-      name: 'Embroidered Rose Hoodie', 
-      price: 59.99, 
-      originalPrice: 79.99,
-      description: 'Premium quality hoodie with beautiful rose embroidery design. Made from 100% cotton for maximum comfort. Perfect for those who love elegant designs.', 
-      rating: 4.5, 
-      reviews: 128, 
-      inStock: 32,
-      sku: 'ERH-001',
-      features: ['100% Cotton', 'Rose Embroidery', 'Machine Washable', 'Unisex Fit', 'Premium Quality'],
-      specifications: {
-        'Material': '100% Premium Cotton',
-        'Weight': '280 GSM',
-        'Care': 'Machine wash cold, tumble dry low',
-        'Fit': 'Unisex Regular Fit',
-        'Embroidery': 'Front chest rose design'
-      },
-      colors: ['Black', 'White', 'Burgundy'],
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-      shipping: 'Free shipping on orders over $100',
-      returns: '30-day hassle-free returns',
-      warranty: '1-year quality guarantee'
-    },
-  };
-
-  const productData = productsData[name] || productsData['embroidered-rose-hoodie'];
-  
-  const product = {
-    id: name,
-    name: productData.name,
-    price: productData.price,
-    originalPrice: productData.originalPrice,
-    discount: Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100),
-    images: [
-      'https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvb2RpZXxlbnwwfHwwfHx8MA%3D%3D',
-      'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160',
-      'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160',
-      'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160'
-    ],
-    description: productData.description,
-    sizes: productData.sizes,
-    colors: productData.colors,
-    rating: productData.rating,
-    reviews: productData.reviews,
-    inStock: productData.inStock,
-    sku: productData.sku,
-    features: productData.features,
-    specifications: productData.specifications,
-    shipping: productData.shipping,
-    returns: productData.returns,
-    warranty: productData.warranty
-  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_BASE_URL}/admin/public/products`);
+        if (res.ok) {
+          const all = await res.json();
+          // match by id or by slug (name param)
+          const found = all.find(p => String(p.id) === String(name) || p.name.toLowerCase().replace(/\s+/g, '-') === name);
+          if (found) {
+            setProduct(found);
+            setRelatedProducts(all.filter(p => p.id !== found.id && p.category === found.category).slice(0, 4));
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [name]);
 
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
+      id: `${product.id}-${selectedSize}-${selectedColor}`,
+      productId: product.id,
       name: product.name,
       price: product.price,
       size: selectedSize,
-      quantity: quantity,
-      image: product.images[0],
-      color: selectedColor
+      color: selectedColor,
+      quantity,
+      image: product.image_url
     });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
@@ -119,199 +80,137 @@ function Products() {
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMousePos({ x, y });
+    setMousePos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100
+    });
   };
 
-  const handleMobileZoom = () => {
-    setZoomLevel(zoomLevel === 1 ? 2 : 1);
-  };
-
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    beforeChange: (current, next) => setCurrentImageIndex(next)
-  };
-
-  const relatedProducts = [
-    { id: 'classic-logo-tshirt', name: 'Classic Logo T-Shirt', price: 29.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.5 },
-    { id: 'premium-hoodie', name: 'Premium Hoodie', price: 64.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.6 },
-    { id: 'custom-name-sweatshirt', name: 'Custom Name Sweatshirt', price: 59.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160', rating: 4.7 },
-  ];
-
-  const renderStars = (rating) => {
-    return (
-      <div className="flex items-center gap-1">
-        {[...Array(5)].map((_, i) => (
-          <span key={i} className={`text-xl ${i < Math.floor(rating) ? 'text-white' : 'text-gray-600'}`}>
-            ★
-          </span>
-        ))}
+  if (loading) return (
+    <div className="bg-black min-h-screen flex items-center justify-center">
+      <div className="text-white text-center">
+        <div className="text-4xl mb-4 animate-spin">⏳</div>
+        <p>Loading product...</p>
       </div>
-    );
-  };
+    </div>
+  );
+
+  if (!product) return (
+    <div className="bg-black min-h-screen flex flex-col items-center justify-center gap-4">
+      <p className="text-white text-xl">Product not found</p>
+      <Link to="/" className="text-gray-400 hover:text-white underline">← Back to Home</Link>
+    </div>
+  );
 
   return (
     <div className="bg-black min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 mb-8 text-sm text-gray-400">
           <Link to="/" className="hover:text-white transition-colors">Home</Link>
           <span>/</span>
-          <Link to="/products" className="hover:text-white transition-colors">Products</Link>
-          <span>/</span>
+          {product.category && (
+            <>
+              <Link to={`/${product.category}`} className="hover:text-white transition-colors capitalize">{product.category}</Link>
+              <span>/</span>
+            </>
+          )}
           <span className="text-white">{product.name}</span>
         </div>
 
         {/* Main Product Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12">
-          
-          {/* Product Images Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
+
+          {/* Image */}
           <div className="space-y-4">
-            {/* Main Image with Zoom */}
-            <div 
-              className={`relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800 h-96 md:h-[600px] ${isMobile ? 'cursor-zoom-in' : 'cursor-zoom-in'}`}
+            <div
+              className="relative bg-gray-900 rounded-xl overflow-hidden border border-gray-800 h-96 md:h-[600px] cursor-zoom-in"
               onMouseMove={!isMobile ? handleMouseMove : undefined}
               onMouseEnter={() => !isMobile && setZoomLevel(1.5)}
               onMouseLeave={() => !isMobile && setZoomLevel(1)}
-              onClick={isMobile ? handleMobileZoom : undefined}
             >
-              <img 
-                src={product.images[currentImageIndex]} 
+              <img
+                src={product.image_url || PLACEHOLDER_IMAGE}
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-300"
                 style={{
                   transform: `scale(${zoomLevel})`,
                   transformOrigin: !isMobile ? `${mousePos.x}% ${mousePos.y}%` : 'center'
                 }}
+                onError={(e) => { e.target.src = PLACEHOLDER_IMAGE; }}
               />
-              {product.discount > 0 && (
-                <div className="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
-                  -{product.discount}%
-                </div>
-              )}
-              {product.inStock < 10 && (
+              {product.stock > 0 && product.stock < 10 && (
                 <div className="absolute bottom-4 left-4 bg-orange-600 text-white px-3 py-1 rounded-lg text-sm font-bold">
-                  Only {product.inStock} left!
+                  Only {product.stock} left!
                 </div>
               )}
-              {isMobile && (
-                <div className="absolute bottom-4 right-4 bg-white text-black px-3 py-1 rounded-lg text-xs font-bold">
-                  🔍 Tap to zoom
+              {product.stock === 0 && (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                  <span className="text-white text-2xl font-bold">Out of Stock</span>
                 </div>
               )}
             </div>
-
-            {/* Thumbnail Navigation */}
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {product.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setCurrentImageIndex(idx);
-                    setZoomLevel(1);
-                    sliderRef.current?.slickGoTo(idx);
-                  }}
-                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                    currentImageIndex === idx 
-                      ? 'border-white' 
-                      : 'border-gray-700 hover:border-gray-500'
-                  }`}
-                >
-                  <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-
-            {/* Image Counter */}
-            <div className="text-center text-gray-400 text-sm">
-              Image {currentImageIndex + 1} of {product.images.length}
-            </div>
+            {!isMobile && <p className="text-center text-gray-500 text-xs">Hover to zoom</p>}
           </div>
 
-          {/* Product Details */}
+          {/* Details */}
           <div className="space-y-6">
-            {/* Header */}
             <div>
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{product.name}</h1>
-                  <p className="text-gray-400 text-sm">SKU: {product.sku}</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-1">{product.name}</h1>
+                  <p className="text-gray-500 text-sm capitalize">{product.category}</p>
                 </div>
                 <button
                   onClick={() => setIsWishlisted(!isWishlisted)}
-                  className={`text-3xl transition-transform hover:scale-125 ${isWishlisted ? 'text-red-500' : 'text-gray-400'}`}
+                  className="text-3xl transition-transform hover:scale-125"
                 >
                   {isWishlisted ? '❤️' : '🤍'}
                 </button>
               </div>
 
-              {/* Rating */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                  {renderStars(product.rating)}
-                  <span className="text-gray-400 text-sm font-bold">({product.reviews} reviews)</span>
-                </div>
-                <div className="flex items-center gap-2 text-green-500 text-sm font-bold">
-                  <span>✓</span>
-                  <span>{product.inStock} in stock</span>
-                </div>
+                {renderStars(4.5)}
+                <span className="text-gray-400 text-sm">4.5 rating</span>
+                <span className="text-green-500 text-sm font-bold">✓ {product.stock} in stock</span>
               </div>
 
-              {/* Price */}
-              <div className="flex items-center gap-4">
-                <span className="text-4xl font-bold text-white">${product.price}</span>
-                {product.originalPrice > product.price && (
-                  <span className="text-xl text-gray-500 line-through">${product.originalPrice}</span>
-                )}
-              </div>
+              <p className="text-4xl font-bold text-white">₹{product.price}</p>
             </div>
 
-            {/* Description */}
-            <p className="text-gray-300 leading-relaxed text-base border-b border-gray-700 pb-6">{product.description}</p>
-            
-            {/* Color Selection */}
+            {product.description && (
+              <p className="text-gray-300 leading-relaxed border-b border-gray-700 pb-6">{product.description}</p>
+            )}
+
+            {/* Color */}
             <div>
-              <h3 className="text-base font-bold mb-4 text-white">Color: <span className="text-gray-400">{selectedColor}</span></h3>
-              <div className="flex gap-3 flex-wrap">
-                {product.colors.map(color => (
-                  <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 ${
-                      selectedColor === color 
-                        ? 'bg-white text-black border-2 border-white shadow-lg' 
+              <h3 className="text-sm font-bold text-white mb-3">Color: <span className="text-gray-400">{selectedColor}</span></h3>
+              <div className="flex gap-2 flex-wrap">
+                {COLORS.map(color => (
+                  <button key={color} onClick={() => setSelectedColor(color)}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 ${
+                      selectedColor === color
+                        ? 'bg-white text-black border-2 border-white'
                         : 'bg-gray-800 text-white border-2 border-gray-700 hover:border-white'
-                    }`}
-                  >
+                    }`}>
                     {color}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Size Selection */}
+            {/* Size */}
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-white">Size: <span className="text-gray-400">{selectedSize}</span></h3>
-                <a href="#" className="text-white text-sm hover:underline">📏 Size Guide</a>
-              </div>
+              <h3 className="text-sm font-bold text-white mb-3">Size: <span className="text-gray-400">{selectedSize}</span></h3>
               <div className="flex gap-2 flex-wrap">
-                {product.sizes.map(size => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all duration-300 ${
-                      selectedSize === size 
-                        ? 'bg-white text-black border-2 border-white shadow-lg' 
+                {SIZES.map(size => (
+                  <button key={size} onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all duration-200 ${
+                      selectedSize === size
+                        ? 'bg-white text-black border-2 border-white'
                         : 'bg-gray-800 text-white border-2 border-gray-700 hover:border-white'
-                    }`}
-                  >
+                    }`}>
                     {size}
                   </button>
                 ))}
@@ -320,201 +219,71 @@ function Products() {
 
             {/* Quantity */}
             <div>
-              <h3 className="text-base font-bold mb-4 text-white">Quantity</h3>
+              <h3 className="text-sm font-bold text-white mb-3">Quantity</h3>
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 py-3 border-2 border-gray-700 bg-gray-800 text-white rounded-lg font-bold hover:border-white transition-colors text-lg"
-                >
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="w-10 h-10 border-2 border-gray-700 bg-gray-800 text-white rounded-lg font-bold hover:border-white transition-colors text-lg">
                   −
                 </button>
-                <span className="text-2xl font-bold text-white min-w-16 text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="px-4 py-3 border-2 border-gray-700 bg-gray-800 text-white rounded-lg font-bold hover:border-white transition-colors text-lg"
-                >
+                <span className="text-2xl font-bold text-white w-8 text-center">{quantity}</span>
+                <button onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
+                  className="w-10 h-10 border-2 border-gray-700 bg-gray-800 text-white rounded-lg font-bold hover:border-white transition-colors text-lg">
                   +
                 </button>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-3 pt-4">
-              <button 
+            {/* Add to Cart */}
+            <div className="space-y-3 pt-2">
+              <button
                 onClick={handleAddToCart}
+                disabled={product.stock === 0}
                 className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 ${
-                  addedToCart 
-                    ? 'bg-green-600 text-white hover:bg-green-700' 
+                  product.stock === 0
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : addedToCart
+                    ? 'bg-green-600 text-white'
                     : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-1 shadow-lg'
-                }`}
-              >
-                {addedToCart ? '✓ Added to Bag' : '👜 Add to Bag'}
+                }`}>
+                {product.stock === 0 ? 'Out of Stock' : addedToCart ? '✓ Added to Bag' : '👜 Add to Bag'}
               </button>
             </div>
 
             {/* Trust Badges */}
             <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 space-y-3">
-              <div className="flex items-center gap-3 text-sm text-gray-300">
-                <span className="text-xl">🚚</span>
-                <span>{product.shipping}</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-gray-300">
-                <span className="text-xl">↩️</span>
-                <span>{product.returns}</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-gray-300">
-                <span className="text-xl">✓</span>
-                <span>{product.warranty}</span>
-              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-300"><span>🚚</span><span>Free shipping on orders over ₹999</span></div>
+              <div className="flex items-center gap-3 text-sm text-gray-300"><span>↩️</span><span>30-day hassle-free returns</span></div>
+              <div className="flex items-center gap-3 text-sm text-gray-300"><span>✓</span><span>1-year quality guarantee</span></div>
             </div>
           </div>
         </div>
 
-        {/* Tabs Section */}
-        <div className="bg-gray-900 rounded-xl border border-gray-800 mb-12">
-          <div className="flex border-b border-gray-700 overflow-x-auto">
-            {['description', 'specifications', 'features', 'reviews', 'shipping'].map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-4 px-6 font-bold text-center transition-colors whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'text-white border-b-2 border-white'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          <div className="p-6 md:p-8">
-            {activeTab === 'description' && (
-              <div className="text-gray-300 leading-relaxed space-y-4">
-                <p>{product.description}</p>
-                <p>This premium product is crafted with attention to detail and made from the finest materials. Perfect for anyone looking for quality and style combined.</p>
-                <p>Each piece is carefully inspected to ensure it meets our high standards of quality and craftsmanship.</p>
-              </div>
-            )}
-
-            {activeTab === 'specifications' && (
-              <div className="space-y-4">
-                {Object.entries(product.specifications).map(([key, value]) => (
-                  <div key={key} className="flex justify-between items-center py-3 border-b border-gray-700">
-                    <span className="text-gray-400 font-medium">{key}</span>
-                    <span className="text-white font-bold">{value}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'features' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {product.features.map((feature, index) => (
-                  <div key={index} className="p-4 bg-gray-800 rounded-lg text-gray-300 font-medium border border-gray-700 flex items-center gap-3">
-                    <span className="text-white font-bold text-lg">✓</span>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'reviews' && (
-              <div>
-                <div className="flex items-center gap-8 mb-8 pb-8 border-b border-gray-700">
-                  <div className="text-5xl font-bold text-white">{product.rating}</div>
-                  <div>
-                    {renderStars(product.rating)}
-                    <div className="text-gray-400 text-sm mt-2">Based on {product.reviews} verified reviews</div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {[
-                    { name: 'John D.', rating: 5, comment: 'Amazing quality! The embroidery is perfect and the fabric is so comfortable.', verified: true },
-                    { name: 'Sarah M.', rating: 4, comment: 'Love this product! Fits perfectly and the custom design looks great.', verified: true },
-                    { name: 'Mike T.', rating: 5, comment: 'Best purchase ever! Highly recommend to everyone.', verified: true }
-                  ].map((review, idx) => (
-                    <div key={idx} className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                      <div className="flex justify-between items-start mb-2 flex-wrap gap-2">
-                        <div>
-                          <span className="font-bold text-white">{review.name}</span>
-                          {review.verified && <span className="ml-2 text-xs bg-green-900 text-green-400 px-2 py-1 rounded">✓ Verified</span>}
-                        </div>
-                        {renderStars(review.rating)}
-                      </div>
-                      <p className="text-gray-300 text-sm">{review.comment}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'shipping' && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-3">Shipping Options</h3>
-                  <div className="space-y-3">
-                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                      <p className="font-bold text-white mb-1">Standard Shipping</p>
-                      <p className="text-gray-400 text-sm">5-7 business days - $10</p>
-                    </div>
-                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                      <p className="font-bold text-white mb-1">Express Shipping</p>
-                      <p className="text-gray-400 text-sm">2-3 business days - $20</p>
-                    </div>
-                    <div className="p-4 bg-gray-800 rounded-lg border border-green-700 bg-green-900/20">
-                      <p className="font-bold text-white mb-1">Free Shipping</p>
-                      <p className="text-gray-400 text-sm">On orders over $100</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Related Products */}
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">You Might Also Like</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedProducts.map(prod => (
-              <Link key={prod.id} to={`/product/${prod.id}`} className="no-underline">
-                <div className="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-white transition-all duration-300 hover:-translate-y-2 group">
-                  <div className="relative overflow-hidden h-64">
-                    <img 
-                      src={prod.image} 
-                      alt={prod.name} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        {relatedProducts.length > 0 && (
+          <section className="border-t border-gray-800 pt-12">
+            <h2 className="text-2xl font-bold text-white mb-8">You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map(p => (
+                <Link key={p.id} to={`/product/${p.id}`} className="no-underline text-white group">
+                  <div className="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-white transition-all duration-300">
+                    <img
+                      src={p.image_url || PLACEHOLDER_SMALL}
+                      alt={p.name}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => { e.target.src = PLACEHOLDER_SMALL; }}
                     />
-                    <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-1">
-                      ★ {prod.rating}
+                    <div className="p-3">
+                      <p className="font-bold text-sm line-clamp-1">{p.name}</p>
+                      <p className="text-gray-400 text-sm mt-1">₹{p.price}</p>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-gray-300 transition-colors">{prod.name}</h3>
-                    <p className="text-2xl font-bold text-white">${prod.price}</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
       </div>
-
-      <style>{`
-        .slick-dots {
-          bottom: 20px !important;
-        }
-
-        .slick-dots li button:before {
-          color: white !important;
-          font-size: 12px !important;
-        }
-
-        .slick-dots li.slick-active button:before {
-          color: white !important;
-        }
-      `}</style>
     </div>
   );
 }

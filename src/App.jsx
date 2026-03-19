@@ -1,7 +1,10 @@
 import Header from './components/Header'
+import AdminLayout from './components/AdminLayout'
+import ProtectedRoute from './components/ProtectedRoute'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import { CartProvider } from './context/CartContext'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import Home from './pages/Home'
 import Products from './pages/Products'
@@ -20,13 +23,40 @@ import OurStory from './pages/OurStory'
 import Contact from './pages/Contact'
 import About from './pages/About'
 import Footer from './components/Footer'
+import AdminDashboard from './pages/admin/Dashboard'
+import AdminBanners from './pages/admin/Banners'
+import AdminBannerForm from './pages/admin/BannerForm'
+import AdminProducts from './pages/admin/Products'
+import AdminProductForm from './pages/admin/ProductForm'
+import AdminUsers from './pages/admin/Users'
+import AdminOrders from './pages/admin/Orders'
+import UserDashboard from './pages/user/Dashboard'
+import UserProfile from './pages/user/Profile'
 
 function App() {
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const role = localStorage.getItem('userRole');
+    setUserRole(role);
+
+    const handleStorageChange = () => {
+      const updatedRole = localStorage.getItem('userRole');
+      setUserRole(updatedRole);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const isAdminRoute = window.location.pathname.startsWith('/admin');
+  const isUserRoute = window.location.pathname.startsWith('/user');
+
   return (
     <CartProvider>
       <Router>
         <ScrollToTop />
-        <Header />
+        {!isAdminRoute && !isUserRoute && <Header />}
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/product/:name' element={<Products />} />
@@ -44,8 +74,19 @@ function App() {
           <Route path='/our-story' element={<OurStory />} />
           <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
+        <Route path='/admin' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/banners' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBanners /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/banners/add' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBannerForm /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/banners/edit/:id' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBannerForm /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/products' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProducts /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/products/add' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProductForm /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/products/edit/:id' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProductForm /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/users' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminUsers /></AdminLayout></ProtectedRoute>} />
+        <Route path='/admin/orders' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminOrders /></AdminLayout></ProtectedRoute>} />
+        <Route path='/user/dashboard' element={<ProtectedRoute requiredRole='user'><UserDashboard /></ProtectedRoute>} />
+        <Route path='/user/profile' element={<ProtectedRoute requiredRole='user'><UserProfile /></ProtectedRoute>} />
         </Routes>
-        <Footer />
+        {!isAdminRoute && !isUserRoute && <Footer />}
       </Router>
     </CartProvider>
   )

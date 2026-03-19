@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Sweatshirts = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const products = [
     { id: 'classic-sweatshirt', name: 'Classic Sweatshirt', price: 49.99, image: 'https://image.hm.com/assets/hm/e0/d8/e0d8250dfe2e3d9baec690f7302023a83062a574.jpg?imwidth=2160' },
@@ -111,12 +112,58 @@ const Sweatshirts = () => {
         }}>
           Sweatshirts
         </h2>
+        
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '40px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: '#0a0a0a',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            border: '1px solid #333',
+            width: isMobile ? '100%' : '400px',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#ececea';
+            e.currentTarget.style.background = '#1a1a1a';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#333';
+            e.currentTarget.style.background = '#0a0a0a';
+          }}
+          >
+            <span style={{ fontSize: '18px', marginRight: '10px' }}>🔍</span>
+            <input
+              type="text"
+              placeholder="Search Sweatshirts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                outline: 'none',
+                color: '#fff',
+                width: '100%',
+                fontSize: '14px',
+                fontFamily: 'Arial, sans-serif'
+              }}
+            />
+          </div>
+        </div>
+        
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
           gap: '24px'
         }}>
-          {products.map(product => (
+          {products.filter(product => 
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+          ).map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

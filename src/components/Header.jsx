@@ -98,23 +98,24 @@ const Header = () => {
     shell: {
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
+      justifyContent: isMobile ? "flex-start" : "space-between",
       padding: isMobile ? "12px 16px" : "16px 40px",
-      flexWrap: "wrap",
-      gap: isMobile ? "10px" : "0"
+      gap: isMobile ? "16px" : "0"
     },
 
     brand: {
       display: "flex",
       alignItems: "center",
-      gap: "12px",
+      gap: isMobile ? "0" : "12px",
       cursor: "pointer",
-      textDecoration: "none"
+      textDecoration: "none",
+      flex: isMobile ? "1" : "0",
+      justifyContent: isMobile ? "center" : "flex-start"
     },
 
     logo: {
-      width: isMobile ? "96px" : "140px",
-      height: isMobile ? "68px" : "100px",
+      width: isMobile ? "80px" : "140px",
+      height: isMobile ? "56px" : "100px",
       borderRadius: "8px",
       objectFit: "cover",
       boxShadow: "0 4px 12px rgba(212, 175, 55, 0.2)"
@@ -122,15 +123,17 @@ const Header = () => {
 
     brandName: {
       fontWeight: "700",
-      fontSize: isMobile ? "18px" : "22px",
+      fontSize: isMobile ? "0" : "22px",
       color: "#fff",
-      letterSpacing: "1px"
+      letterSpacing: "1px",
+      display: isMobile ? "none" : "block"
     },
 
     brandTag: {
-      fontSize: isMobile ? "11px" : "12px",
+      fontSize: isMobile ? "0" : "12px",
       color: "#aaa",
-      fontWeight: 500
+      fontWeight: 500,
+      display: isMobile ? "none" : "block"
     },
 
     nav: {
@@ -152,20 +155,19 @@ const Header = () => {
     },
 
     actions: {
-      display: isMobile ? "none" : "flex",
-      alignItems: "center",
-      gap: "16px"
+      display: "none"
     },
 
     search: {
-      display: "flex",
+      display: isMobile ? "none" : "flex",
       alignItems: "center",
       background: "#0a0a0a",
       padding: "10px 16px",
       borderRadius: "25px",
       color: "white",
       border: "1px solid #333",
-      transition: "all 0.3s ease"
+      transition: "all 0.3s ease",
+      width: "200px"
     },
 
     searchInput: {
@@ -174,7 +176,7 @@ const Header = () => {
       outline: "none",
       marginLeft: "8px",
       color: "white",
-      width: isMobile ? "100%" : "150px",
+      width: "100%",
       fontSize: "14px"
     },
 
@@ -246,7 +248,8 @@ const Header = () => {
       gap: "5px",
       border: "none",
       background: "transparent",
-      cursor: "pointer"
+      cursor: "pointer",
+      order: -1
     },
 
     menuLine: {
@@ -261,9 +264,10 @@ const Header = () => {
       background: "linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 100%)",
       borderTop: "2px solid #e3e1da",
       padding: "20px",
-      maxHeight: "calc(100vh - 200px)",
+      maxHeight: "calc(100vh - 250px)",
       overflowY: "auto",
-      position: "relative"
+      position: "relative",
+      animation: "slideDown 0.3s ease"
     },
 
     closeBtn: {
@@ -320,7 +324,10 @@ const Header = () => {
       gap: "10px",
       alignItems: "center",
       marginBottom: "16px",
-      flexWrap: "wrap"
+      flexWrap: "wrap",
+      marginTop: "20px",
+      paddingTop: "20px",
+      borderTop: "1px solid #333"
     },
 
     mobileIconRow: {
@@ -339,6 +346,26 @@ const Header = () => {
       </div>
 
       <div style={styles.shell}>
+        <button 
+          ref={menuBtnRef}
+          style={styles.menuBtn} 
+          onClick={toggleMenu}
+          onMouseEnter={(e) => {
+            e.currentTarget.querySelectorAll('span').forEach(line => {
+              line.style.background = "#eeece5";
+            });
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.querySelectorAll('span').forEach(line => {
+              line.style.background = "#e9e7de";
+            });
+          }}
+        >
+          <span style={styles.menuLine}></span>
+          <span style={styles.menuLine}></span>
+          <span style={styles.menuLine}></span>
+        </button>
+
         <a href="/" style={{ ...styles.brand, textDecoration: "none" }} onClick={closeMenu}>
           <img
             src="https://res.cloudinary.com/dgyykbmt6/image/upload/v1773144048/md01_ailgiu.jpg"
@@ -394,25 +421,25 @@ const Header = () => {
           </a>
         </nav>
 
-        <div style={styles.actions}>
-          <div style={styles.search}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#ececea";
-              e.currentTarget.style.background = "#1a1a1a";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#333";
-              e.currentTarget.style.background = "#0a0a0a";
-            }}
-          >
-            🔍
-            <input
-              type="search"
-              placeholder="Search products..."
-              style={styles.searchInput}
-            />
-          </div>
+        <div style={styles.search}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "#ececea";
+            e.currentTarget.style.background = "#1a1a1a";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "#333";
+            e.currentTarget.style.background = "#0a0a0a";
+          }}
+        >
+          🔍
+          <input
+            type="search"
+            placeholder="Search products..."
+            style={styles.searchInput}
+          />
+        </div>
 
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <a href="/cart" style={{ textDecoration: "none" }}>
             <button 
               style={styles.iconBtn}
@@ -430,7 +457,7 @@ const Header = () => {
             </button>
           </a>
 
-          {/* {isLoggedIn ? (
+          {isLoggedIn ? (
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <span style={{ fontSize: "14px", color: "#d4af37", fontWeight: "600" }}>
                 👤 {userName}
@@ -465,46 +492,11 @@ const Header = () => {
             >
               👤 Login
             </button>
-          )} */}
+          )}
         </div>
-
-        <button 
-          ref={menuBtnRef}
-          style={styles.menuBtn} 
-          onClick={toggleMenu}
-          onMouseEnter={(e) => {
-            e.currentTarget.querySelectorAll('span').forEach(line => {
-              line.style.background = "#eeece5";
-            });
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.querySelectorAll('span').forEach(line => {
-              line.style.background = "#e9e7de";
-            });
-          }}
-        >
-          <span style={styles.menuLine}></span>
-          <span style={styles.menuLine}></span>
-          <span style={styles.menuLine}></span>
-        </button>
       </div>
 
       <div ref={mobileMenuRef} style={styles.mobilePanel}>
-        <button
-          style={styles.closeBtn}
-          onClick={closeMenu}
-          onMouseEnter={(e) => {
-            e.target.style.color = "#edead8";
-            e.target.style.transform = "scale(1.2)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.color = "#ebe9e2";
-            e.target.style.transform = "scale(1)";
-          }}
-        >
-          ✕
-        </button>
-
         <nav style={styles.mobileNav}>
           <a 
             href="/" 
@@ -589,29 +581,35 @@ const Header = () => {
               👜 Bag {cartCount > 0 && `(${cartCount})`}
             </button>
           </a>
+          {!isLoggedIn && (
+            <button
+              onClick={() => {
+                navigate('/login');
+                closeMenu();
+              }}
+              style={{ ...styles.mobileCTA, flex: 1 }}
+            >
+              👤 Login
+            </button>
+          )}
         </div>
 
-        {/* {isLoggedIn ? (
-          <button
-            onClick={() => {
-              handleLogout();
-              closeMenu();
-            }}
-            style={{ ...styles.mobileCTA, background: "#8b0000", color: "#fff" }}
-          >
-            Logout
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              navigate('/login');
-              closeMenu();
-            }}
-            style={styles.mobileCTA}
-          >
-            Login
-          </button>
-        )} */}
+        {isLoggedIn && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", paddingTop: "10px" }}>
+            <span style={{ fontSize: "14px", color: "#d4af37", fontWeight: "600", textAlign: "center" }}>
+              👤 {userName}
+            </span>
+            <button
+              onClick={() => {
+                handleLogout();
+                closeMenu();
+              }}
+              style={{ ...styles.mobileCTA, background: "#8b0000", color: "#fff" }}
+            >
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );

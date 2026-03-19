@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 const TShirts = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const products = [
     { id: 'classic-logo-tshirt', name: 'Classic Logo T-Shirt', price: 29.99, image: 'https://plus.unsplash.com/premium_photo-1718913936342-eaafff98834b?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dHNoaXJ0JTIwd2hpdGV8ZW58MHx8MHx8fDA%3D' },
@@ -111,12 +112,58 @@ const TShirts = () => {
         }}>
           T-Shirts
         </h2>
+        
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '40px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: '#0a0a0a',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            border: '1px solid #333',
+            width: isMobile ? '100%' : '400px',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#ececea';
+            e.currentTarget.style.background = '#1a1a1a';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#333';
+            e.currentTarget.style.background = '#0a0a0a';
+          }}
+          >
+            <span style={{ fontSize: '18px', marginRight: '10px' }}>🔍</span>
+            <input
+              type="text"
+              placeholder="Search T-Shirts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                outline: 'none',
+                color: '#fff',
+                width: '100%',
+                fontSize: '14px',
+                fontFamily: 'Arial, sans-serif'
+              }}
+            />
+          </div>
+        </div>
+        
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
           gap: '24px'
         }}>
-          {products.map(product => (
+          {products.filter(product => 
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+          ).map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
