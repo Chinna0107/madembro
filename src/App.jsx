@@ -1,10 +1,11 @@
+import React, { useState, useEffect } from 'react'
 import Header from './components/Header'
 import AdminLayout from './components/AdminLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import { CartProvider } from './context/CartContext'
-import React, { useState, useEffect } from 'react'
+import UserDashboard from './pages/user/Dashboard'
 import './App.css'
 import Home from './pages/Home'
 import Products from './pages/Products'
@@ -30,8 +31,6 @@ import AdminProducts from './pages/admin/Products'
 import AdminProductForm from './pages/admin/ProductForm'
 import AdminUsers from './pages/admin/Users'
 import AdminOrders from './pages/admin/Orders'
-import UserDashboard from './pages/user/Dashboard'
-import UserProfile from './pages/user/Profile'
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -58,33 +57,32 @@ function App() {
         <ScrollToTop />
         {!isAdminRoute && !isUserRoute && <Header />}
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/product/:name' element={<Products />} />
-          <Route path='/cart' element={<Cart />} />
-          <Route path='/checkout' element={<Checkout />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
-          <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-          <Route path='/refund-policy' element={<RefundPolicy />} />
-          <Route path='/shipping-policy' element={<ShippingPolicy />} />
-          <Route path='/tshirts' element={<TShirts />} />
-          <Route path='/sweatshirts' element={<Sweatshirts />} />
-          <Route path='/hoodies' element={<Hoodies />} />
-          <Route path='/custom-embroidery' element={<CustomEmbroidery />} />
-          <Route path='/our-story' element={<OurStory />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/contact' element={<Contact />} />
-        <Route path='/admin' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/banners' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBanners /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/banners/add' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBannerForm /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/banners/edit/:id' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBannerForm /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/products' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProducts /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/products/add' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProductForm /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/products/edit/:id' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProductForm /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/users' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminUsers /></AdminLayout></ProtectedRoute>} />
-        <Route path='/admin/orders' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminOrders /></AdminLayout></ProtectedRoute>} />
-        <Route path='/user/dashboard' element={<ProtectedRoute requiredRole='user'><UserDashboard /></ProtectedRoute>} />
-        <Route path='/user/profile' element={<ProtectedRoute requiredRole='user'><UserProfile /></ProtectedRoute>} />
+        <Route path='/' element={<Home />} />
+        <Route path='/product/:name' element={<Products />} />
+        <Route path='/cart' element={<Cart />} />
+        <Route path='/checkout' element={<Checkout />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
+        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+        <Route path='/refund-policy' element={<RefundPolicy />} />
+        <Route path='/shipping-policy' element={<ShippingPolicy />} />
+        <Route path='/tshirts' element={<TShirts />} />
+        <Route path='/sweatshirts' element={<Sweatshirts />} />
+        <Route path='/hoodies' element={<Hoodies />} />
+        <Route path='/custom-embroidery' element={<CustomEmbroidery />} />
+        <Route path='/our-story' element={<OurStory />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/contact' element={<Contact />} />
+      <Route path='/admin' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/banners' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBanners /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/banners/add' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBannerForm /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/banners/edit/:id' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminBannerForm /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/products' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProducts /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/products/add' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProductForm /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/products/edit/:id' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminProductForm /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/users' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminUsers /></AdminLayout></ProtectedRoute>} />
+      <Route path='/admin/orders' element={<ProtectedRoute requiredRole='admin'><AdminLayout><AdminOrders /></AdminLayout></ProtectedRoute>} />
+      <Route path='/user/dashboard' element={<ProtectedRoute requiredRole='user'><UserDashboard /></ProtectedRoute>} />
         </Routes>
         {!isAdminRoute && !isUserRoute && <Footer />}
       </Router>

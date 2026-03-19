@@ -13,7 +13,7 @@ const Cart = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce((total, item) => total + (parseFloat(item.price) * item.quantity), 0);
   const tax = subtotal * 0.1;
   const shipping = subtotal > 100 ? 0 : 10;
   const total = subtotal + tax + shipping;
@@ -68,7 +68,7 @@ const Cart = () => {
                           Size: <span className="text-white font-bold">{item.size}</span>
                         </p>
                         <p className="text-sm font-bold text-white">
-                          ${item.price.toFixed(2)}
+                          ₹{parseFloat(item.price).toFixed(2)}
                         </p>
 
                         {/* Quantity Controls */}
@@ -92,7 +92,7 @@ const Cart = () => {
 
                         {/* Total Price */}
                         <p className="text-xs font-bold text-white mt-1">
-                          Total: ${(item.price * item.quantity).toFixed(2)}
+                          Total: ₹{(parseFloat(item.price) * item.quantity).toFixed(2)}
                         </p>
 
                         {/* Remove Button */}
@@ -130,7 +130,7 @@ const Cart = () => {
                           Size: <span className="text-white font-bold">{item.size}</span>
                         </p>
                         <p className="text-base font-bold text-white">
-                          ${item.price.toFixed(2)}
+                          ₹{parseFloat(item.price).toFixed(2)}
                         </p>
                       </div>
 
@@ -156,7 +156,7 @@ const Cart = () => {
                       {/* Total Price */}
                       <div className="text-right">
                         <p className="text-base font-bold text-white">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ₹{(parseFloat(item.price) * item.quantity).toFixed(2)}
                         </p>
                       </div>
 
@@ -183,23 +183,23 @@ const Cart = () => {
             <div className="flex flex-col gap-4 mb-6 pb-6 border-b border-gray-700">
               <div className="flex justify-between text-sm md:text-base text-gray-400">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400">
                 <span>Tax (10%)</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>₹{tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm md:text-base text-gray-400">
                 <span>Shipping</span>
                 <span className={shipping === 0 ? 'text-green-500 font-bold' : 'text-gray-400'}>
-                  {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                  {shipping === 0 ? 'FREE' : `₹${shipping.toFixed(2)}`}
                 </span>
               </div>
             </div>
 
             <div className="flex justify-between text-lg md:text-xl font-bold text-white mb-6">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>₹{total.toFixed(2)}</span>
             </div>
 
             <button

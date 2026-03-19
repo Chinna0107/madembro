@@ -2,11 +2,10 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children, requiredRole = 'admin' }) => {
-  const token = localStorage.getItem('authToken');
-  const userRole = localStorage.getItem('userRole');
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  const userRole = localStorage.getItem('userRole');
 
-  if (!isLoggedIn || !token) {
+  if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
 
@@ -14,7 +13,7 @@ const ProtectedRoute = ({ children, requiredRole = 'admin' }) => {
     return <Navigate to="/user/dashboard" replace />;
   }
 
-  if (requiredRole === 'user' && userRole !== 'user') {
+  if (requiredRole === 'user' && userRole === 'admin') {
     return <Navigate to="/admin" replace />;
   }
 

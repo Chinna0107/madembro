@@ -1,326 +1,394 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API = config.apiUrl;
+
+const InputField = ({ label, type, name, value, onChange, placeholder, error, children }) => (
+  <div className="mb-5">
+    <label className="block mb-2 text-xs font-semibold tracking-widest text-gray-400 uppercase">{label}</label>
+    <div className="relative">
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full px-4 py-3.5 bg-transparent border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-white transition-all duration-300 text-sm hover:border-gray-500 pr-12"
+      />
+      {children}
+    </div>
+    {error && <p className="text-red-400 text-xs mt-1.5">{error}</p>}
+  </div>
+);
+
+// Signup steps: 'form' → 'otp' → 'password'
+const STEPS = { FORM: 'form', OTP: 'otp', PASSWORD: 'password' };
 
 const Login = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: ''
-  });
-
+  const [message, setMessage] = useState({ text: '', success: false });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState({});
 
-  React.useEffect(() => {
+  // Login form
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+
+  // Signup multi-step
+  const [step, setStep] = useState(STEPS.FORM);
+  const [signupData, setSignupData] = useState({ firstName: '', lastName: '', email: '' });
+  const [otp, setOtp] = useState('');
+  const [passwords, setPasswords] = useState({ password: '', confirm: '' });
+  const [otpTimer, setOtpTimer] = useState(0);
+
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+  useEffect(() => {
+    if (otpTimer > 0) {
+      const t = setTimeout(() => setOtpTimer(prev => prev - 1), 1000);
+      return () => clearTimeout(t);
     }
-  };
+  }, [otpTimer]);
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
+  const setError = (field, msg) => setErrors(prev => ({ ...prev, [field]: msg }));
+  const clearError = (field) => setErrors(prev => ({ ...prev, [field]: '' }));
 
-    if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (!isLogin) {
-      if (!formData.firstName.trim()) {
-        newErrors.firstName = 'First name is required';
-      }
-      if (!formData.lastName.trim()) {
-        newErrors.lastName = 'Last name is required';
-      }
-      if (!formData.confirmPassword.trim()) {
-        newErrors.confirmPassword = 'Please confirm your password';
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Passwords do not match';
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  // ── LOGIN ──
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+    const errs = {};
+    if (!loginData.email.trim()) errs.email = 'Email is required';
+    else if (!/^\S+@\S+\.\S+$/.test(loginData.email)) errs.email = 'Enter a valid email';
+    if (!loginData.password.trim()) errs.password = 'Password is required';
+    if (Object.keys(errs).length) return setErrors(errs);
 
     setLoading(true);
-    setMessage('');
-
+    setMessage({ text: '', success: false });
     try {
-      if (isLogin) {
-        // Login API call
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password
-          })
-        });
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginData.email.trim(), password: loginData.password }),
+      });
+      if (!res.ok) throw new Error((await res.json()).message || 'Invalid email or password');
+      const data = await res.json();
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Login failed');
-        }
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', loginData.email.trim());
+      localStorage.setItem('userName', data.user?.firstName || loginData.email.split('@')[0]);
+      localStorage.setItem('userRole', data.user?.role || 'user');
+      if (data.token) localStorage.setItem('authToken', data.token);
 
-        const data = await response.json();
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userName', data.user?.firstName || formData.email.split('@')[0]);
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userRole', data.user?.role || 'user');
-        setMessage('Login successful! Redirecting...');
-        setTimeout(() => {
-          if (data.user?.role === 'admin') {
-            navigate('/admin');
-          } else {
-            navigate('/user/dashboard');
-          }
-          window.location.reload();
-        }, 1500);
-      } else {
-        // Register API call
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            password: formData.password
-          })
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Registration failed');
-        }
-
-        const data = await response.json();
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userName', formData.firstName);
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userRole', 'user');
-        setMessage('Account created successfully! Redirecting...');
-        setTimeout(() => {
-          navigate('/user/dashboard');
-          window.location.reload();
-        }, 1500);
-      }
-    } catch (error) {
-      setMessage(error.message || 'An error occurred. Please try again.');
+      setMessage({ text: 'Welcome back! Redirecting...', success: true });
+      setTimeout(() => {
+        navigate(data.user?.role === 'admin' ? '/admin' : '/user/dashboard');
+        window.location.reload();
+      }, 1500);
+    } catch (err) {
+      setMessage({ text: err.message, success: false });
     } finally {
       setLoading(false);
     }
   };
 
+  // ── SIGNUP STEP 1: Send OTP ──
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    const errs = {};
+    if (!signupData.firstName.trim()) errs.firstName = 'Required';
+    if (!signupData.lastName.trim()) errs.lastName = 'Required';
+    if (!signupData.email.trim()) errs.email = 'Email is required';
+    else if (!/^\S+@\S+\.\S+$/.test(signupData.email)) errs.email = 'Enter a valid email';
+    if (Object.keys(errs).length) return setErrors(errs);
+
+    setLoading(true);
+    setMessage({ text: '', success: false });
+    try {
+      const res = await fetch(`${API}/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: signupData.email.trim() }),
+      });
+      if (!res.ok) throw new Error((await res.json()).message || 'Failed to send OTP');
+      setStep(STEPS.OTP);
+      setOtpTimer(60);
+      setMessage({ text: `OTP sent to ${signupData.email}`, success: true });
+    } catch (err) {
+      setMessage({ text: err.message, success: false });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── SIGNUP STEP 2: Verify OTP ──
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    if (!otp.trim() || otp.length !== 6) return setError('otp', 'Enter the 6-digit OTP');
+
+    setLoading(true);
+    setMessage({ text: '', success: false });
+    try {
+      const res = await fetch(`${API}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: signupData.email.trim(), otp: otp.trim() }),
+      });
+      if (!res.ok) throw new Error((await res.json()).message || 'Invalid OTP');
+      setStep(STEPS.PASSWORD);
+      setMessage({ text: 'OTP verified! Set your password.', success: true });
+    } catch (err) {
+      setMessage({ text: err.message, success: false });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── SIGNUP STEP 3: Set Password & Register ──
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    const errs = {};
+    if (!passwords.password) errs.password = 'Password is required';
+    else if (passwords.password.length < 6) errs.password = 'Minimum 6 characters';
+    if (!passwords.confirm) errs.confirm = 'Please confirm your password';
+    else if (passwords.password !== passwords.confirm) errs.confirm = 'Passwords do not match';
+    if (Object.keys(errs).length) return setErrors(errs);
+
+    setLoading(true);
+    setMessage({ text: '', success: false });
+    try {
+      const res = await fetch(`${API}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: signupData.firstName.trim(),
+          lastName: signupData.lastName.trim(),
+          email: signupData.email.trim(),
+          password: passwords.password,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).message || 'Registration failed');
+      const data = await res.json();
+
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', signupData.email.trim());
+      localStorage.setItem('userName', signupData.firstName.trim());
+      localStorage.setItem('userRole', data.user?.role || 'user');
+      if (data.token) localStorage.setItem('authToken', data.token);
+
+      setMessage({ text: 'Account created! Redirecting...', success: true });
+      setTimeout(() => {
+        navigate('/user/dashboard');
+        window.location.reload();
+      }, 1500);
+    } catch (err) {
+      setMessage({ text: err.message, success: false });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const switchMode = () => {
+    setIsLogin(!isLogin);
+    setStep(STEPS.FORM);
+    setErrors({});
+    setMessage({ text: '', success: false });
+    setOtp('');
+    setPasswords({ password: '', confirm: '' });
+  };
+
+  const leftPanel = (
+    <div className="relative bg-white flex flex-col justify-between p-12 overflow-hidden">
+      <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gray-100 opacity-60" />
+      <div className="absolute -bottom-20 -left-10 w-72 h-72 rounded-full bg-gray-200 opacity-40" />
+      <div className="relative z-10">
+        <a href="/" className="inline-block mb-12">
+          <img src="https://res.cloudinary.com/dgyykbmt6/image/upload/v1773144048/md01_ailgiu.jpg" alt="Meda" className="w-20 h-14 object-cover rounded-lg shadow-md" />
+        </a>
+        <h1 className="text-4xl font-black text-black tracking-tight leading-tight mb-4">Crafted with<br />precision.</h1>
+        <p className="text-gray-500 text-sm leading-relaxed max-w-xs">Premium embroidery apparel made for those who appreciate quality and individuality.</p>
+      </div>
+      <div className="relative z-10 space-y-5">
+        {[
+          { icon: '✦', title: 'Premium Quality', desc: 'Handcrafted embroidery on every piece' },
+          { icon: '✦', title: 'Custom Designs', desc: 'Personalize with your own artwork' },
+          { icon: '✦', title: 'Fast Delivery', desc: 'Shipped to your door in days' },
+        ].map(({ icon, title, desc }) => (
+          <div key={title} className="flex items-start gap-3">
+            <span className="text-black text-xs mt-1">{icon}</span>
+            <div>
+              <p className="font-bold text-black text-sm">{title}</p>
+              <p className="text-gray-500 text-xs">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const stepLabel = step === STEPS.FORM ? 'Create account' : step === STEPS.OTP ? 'Verify OTP' : 'Set Password';
+  const stepDesc = step === STEPS.FORM ? 'Join the Madembro community.' : step === STEPS.OTP ? `Enter the OTP sent to ${signupData.email}` : 'Choose a strong password.';
+
   return (
-    <div className="bg-black min-h-screen p-4 md:p-8 flex items-center justify-center">
-      <div className="max-w-4xl w-full">
-        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-0 bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-2xl`}>
-          
-          {/* Left Side - Branding */}
-          {!isMobile && (
-            <div className="bg-white text-black p-12 flex flex-col justify-center">
-              <h1 className="text-4xl font-bold mb-6 tracking-wider">
-                MADEMBRO
-              </h1>
-              <p className="text-base mb-8 leading-relaxed font-medium">
-                Welcome to our custom embroidery studio. Create unique, personalized apparel with our premium embroidery services.
-              </p>
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-3 items-start">
-                  <span className="text-2xl">✓</span>
-                  <div>
-                    <p className="font-bold mb-1">Premium Quality</p>
-                    <p className="text-sm opacity-80">High-quality embroidery on all products</p>
-                  </div>
-                </div>
-                <div className="flex gap-3 items-start">
-                  <span className="text-2xl">✓</span>
-                  <div>
-                    <p className="font-bold mb-1">Custom Designs</p>
-                    <p className="text-sm opacity-80">Personalize your apparel with custom designs</p>
-                  </div>
-                </div>
-                <div className="flex gap-3 items-start">
-                  <span className="text-2xl">✓</span>
-                  <div>
-                    <p className="font-bold mb-1">Fast Shipping</p>
-                    <p className="text-sm opacity-80">Quick delivery to your doorstep</p>
-                  </div>
-                </div>
-              </div>
+    <div className="bg-black min-h-screen flex items-center justify-center p-4">
+      <style>{`
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.5s ease forwards; }
+        input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px #000 inset !important; -webkit-text-fill-color: #fff !important; }
+      `}</style>
+
+      <div className={`w-full max-w-4xl fade-up ${isMobile ? '' : 'grid grid-cols-2'} rounded-2xl overflow-hidden border border-gray-800 shadow-2xl`}>
+        {!isMobile && leftPanel}
+
+        <div className="bg-[#0a0a0a] p-8 md:p-12 flex flex-col justify-center">
+          {isMobile && (
+            <div className="flex justify-center mb-8">
+              <img src="https://res.cloudinary.com/dgyykbmt6/image/upload/v1773144048/md01_ailgiu.jpg" alt="Meda" className="w-16 h-12 object-cover rounded-lg" />
             </div>
           )}
 
-          {/* Right Side - Form */}
-          <div className={`p-8 md:p-12 flex flex-col justify-center ${isMobile ? 'col-span-1' : ''}`}>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
+          <div className="mb-8">
+            <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-1">
+              {isLogin ? 'Sign in' : stepLabel}
             </h2>
-            <p className="text-gray-400 mb-8 text-sm md:text-base">
-              {isLogin ? 'Sign in to your account' : 'Join our community'}
+            <p className="text-gray-500 text-sm">
+              {isLogin ? 'Welcome back — good to see you.' : stepDesc}
             </p>
+          </div>
 
-            {message && (
-              <div className={`p-3 md:p-4 rounded-lg mb-6 text-sm font-medium ${
-                message.includes('successful') 
-                  ? 'bg-green-900 border border-green-600 text-green-400' 
-                  : 'bg-red-900 border border-red-600 text-red-400'
-              }`}>
-                {message}
-              </div>
-            )}
+          {message.text && (
+            <div className={`px-4 py-3 rounded-lg mb-6 text-sm font-medium border ${message.success ? 'bg-green-950 border-green-800 text-green-400' : 'bg-red-950 border-red-800 text-red-400'}`}>
+              {message.text}
+            </div>
+          )}
 
-            <form onSubmit={handleSubmit}>
-              {!isLogin && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block mb-2 text-white font-bold text-sm">First Name</label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
-                      placeholder="John"
-                    />
-                    {errors.firstName && <div className="text-red-500 text-xs mt-1">{errors.firstName}</div>}
-                  </div>
-                  <div>
-                    <label className="block mb-2 text-white font-bold text-sm">Last Name</label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
-                      placeholder="Doe"
-                    />
-                    {errors.lastName && <div className="text-red-500 text-xs mt-1">{errors.lastName}</div>}
-                  </div>
-                </div>
-              )}
+          {/* ── LOGIN FORM ── */}
+          {isLogin && (
+            <form onSubmit={handleLogin}>
+              <InputField label="Email" type="email" name="email" value={loginData.email}
+                onChange={e => { setLoginData(p => ({ ...p, email: e.target.value })); clearError('email'); }}
+                placeholder="you@example.com" error={errors.email} />
 
-              <div className="mb-4">
-                <label className="block mb-2 text-white font-bold text-sm">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
-                  placeholder="you@example.com"
-                />
-                {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
-              </div>
+              <InputField label="Password" type={showPassword ? 'text' : 'password'} name="password" value={loginData.password}
+                onChange={e => { setLoginData(p => ({ ...p, password: e.target.value })); clearError('password'); }}
+                placeholder="••••••••" error={errors.password}>
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors text-sm">
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </InputField>
 
-              <div className="mb-4">
-                <label className="block mb-2 text-white font-bold text-sm">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
-                  placeholder="••••••••"
-                />
-                {errors.password && <div className="text-red-500 text-xs mt-1">{errors.password}</div>}
-              </div>
-
-              {!isLogin && (
-                <div className="mb-6">
-                  <label className="block mb-2 text-white font-bold text-sm">Confirm Password</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-sm"
-                    placeholder="••••••••"
-                  />
-                  {errors.confirmPassword && <div className="text-red-500 text-xs mt-1">{errors.confirmPassword}</div>}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className={`w-full py-3 md:py-4 rounded-lg font-bold text-base transition-all duration-300 ${
-                  loading 
-                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
-                    : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-1'
-                }`}
-              >
-                {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
+              <button type="submit" disabled={loading}
+                className={`w-full py-4 rounded-lg font-bold text-sm tracking-widest uppercase transition-all duration-300 mt-2 ${loading ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-0.5 shadow-lg'}`}>
+                {loading ? 'Please wait...' : 'Sign In'}
               </button>
             </form>
+          )}
 
-            <div className="mt-8 text-center border-t border-gray-700 pt-8">
-              <p className="text-gray-400 mb-4 text-sm">
-                {isLogin ? "Don't have an account?" : 'Already have an account?'}
-              </p>
-              <button
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setFormData({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '' });
-                  setErrors({});
-                  setMessage('');
-                }}
-                className="border-2 border-white text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-white hover:text-black transition-all duration-300"
-              >
-                {isLogin ? 'Sign Up' : 'Sign In'}
+          {/* ── SIGNUP STEP 1: Details ── */}
+          {!isLogin && step === STEPS.FORM && (
+            <form onSubmit={handleSendOtp}>
+              <div className="grid grid-cols-2 gap-4">
+                <InputField label="First Name" type="text" name="firstName" value={signupData.firstName}
+                  onChange={e => { setSignupData(p => ({ ...p, firstName: e.target.value })); clearError('firstName'); }}
+                  placeholder="John" error={errors.firstName} />
+                <InputField label="Last Name" type="text" name="lastName" value={signupData.lastName}
+                  onChange={e => { setSignupData(p => ({ ...p, lastName: e.target.value })); clearError('lastName'); }}
+                  placeholder="Doe" error={errors.lastName} />
+              </div>
+              <InputField label="Email" type="email" name="email" value={signupData.email}
+                onChange={e => { setSignupData(p => ({ ...p, email: e.target.value })); clearError('email'); }}
+                placeholder="you@example.com" error={errors.email} />
+
+              <button type="submit" disabled={loading}
+                className={`w-full py-4 rounded-lg font-bold text-sm tracking-widest uppercase transition-all duration-300 mt-2 ${loading ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-0.5 shadow-lg'}`}>
+                {loading ? 'Sending OTP...' : 'Send OTP'}
               </button>
-            </div>
+            </form>
+          )}
 
-            <button
-              onClick={() => navigate('/')}
-              className="mt-6 text-gray-400 hover:text-white text-sm underline transition-colors"
-            >
-              ← Back to Home
+          {/* ── SIGNUP STEP 2: OTP ── */}
+          {!isLogin && step === STEPS.OTP && (
+            <form onSubmit={handleVerifyOtp}>
+              <div className="mb-5">
+                <label className="block mb-2 text-xs font-semibold tracking-widest text-gray-400 uppercase">Enter OTP</label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={otp}
+                  onChange={e => { setOtp(e.target.value.replace(/\D/g, '')); clearError('otp'); }}
+                  placeholder="6-digit OTP"
+                  className="w-full px-4 py-3.5 bg-transparent border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-white transition-all duration-300 text-sm text-center tracking-[0.5em]"
+                />
+                {errors.otp && <p className="text-red-400 text-xs mt-1.5">{errors.otp}</p>}
+              </div>
+
+              <div className="flex items-center justify-between mb-5 text-xs">
+                <span className="text-gray-500">
+                  {otpTimer > 0 ? `Resend in ${otpTimer}s` : ''}
+                </span>
+                {otpTimer === 0 && (
+                  <button type="button" onClick={handleSendOtp} className="text-white underline hover:text-gray-300 transition-colors">
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+
+              <button type="submit" disabled={loading}
+                className={`w-full py-4 rounded-lg font-bold text-sm tracking-widest uppercase transition-all duration-300 ${loading ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-0.5 shadow-lg'}`}>
+                {loading ? 'Verifying...' : 'Verify OTP'}
+              </button>
+            </form>
+          )}
+
+          {/* ── SIGNUP STEP 3: Set Password ── */}
+          {!isLogin && step === STEPS.PASSWORD && (
+            <form onSubmit={handleRegister}>
+              <InputField label="Password" type={showPassword ? 'text' : 'password'} name="password" value={passwords.password}
+                onChange={e => { setPasswords(p => ({ ...p, password: e.target.value })); clearError('password'); }}
+                placeholder="Min. 6 characters" error={errors.password}>
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors text-sm">
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </InputField>
+
+              <InputField label="Confirm Password" type={showConfirm ? 'text' : 'password'} name="confirm" value={passwords.confirm}
+                onChange={e => { setPasswords(p => ({ ...p, confirm: e.target.value })); clearError('confirm'); }}
+                placeholder="Re-enter password" error={errors.confirm}>
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors text-sm">
+                  {showConfirm ? '🙈' : '👁️'}
+                </button>
+              </InputField>
+
+              <button type="submit" disabled={loading}
+                className={`w-full py-4 rounded-lg font-bold text-sm tracking-widest uppercase transition-all duration-300 mt-2 ${loading ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-white text-black hover:bg-gray-100 hover:-translate-y-0.5 shadow-lg'}`}>
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </button>
+            </form>
+          )}
+
+          <div className="mt-8 pt-6 border-t border-gray-800 flex items-center justify-between">
+            <p className="text-gray-500 text-xs">
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}
+            </p>
+            <button onClick={switchMode}
+              className="text-white text-xs font-bold tracking-wider uppercase border border-gray-700 px-4 py-2 rounded-full hover:border-white transition-all duration-300">
+              {isLogin ? 'Sign Up' : 'Sign In'}
             </button>
           </div>
+
+          <button onClick={() => navigate('/')} className="mt-6 text-gray-600 hover:text-gray-400 text-xs transition-colors text-left">
+            ← Back to Home
+          </button>
         </div>
       </div>
     </div>

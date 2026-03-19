@@ -140,7 +140,8 @@ function Products() {
       if (colorData) {
         const images = [colorData.image1, colorData.image2, colorData.image3].filter(Boolean);
         setCurrentImageIndex(0);
-        setProduct(prev => ({\n          ...prev,
+        setProduct(prev => ({
+          ...prev,
           images: images.length > 0 ? images : ['https://via.placeholder.com/600x600?text=No+Image']
         }));
       }

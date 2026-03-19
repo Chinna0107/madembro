@@ -1,32 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import config from '../../config';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({ users: 0, products: 0, banners: 0 });
+  const [stats, setStats] = useState({ users: 0, products: 0, banners: 0, orders: 0, revenue: 0 });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { fetchStats(); }, []);
-
-  const fetchStats = async () => {
-    try {
-      const token = localStorage.getItem('authToken');
-      const res = await fetch(`${API_BASE_URL}/admin/dashboard`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) setStats(await res.json());
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    fetch(`${config.apiUrl}/admin/dashboard`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(setStats)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   const cards = [
-    { title: 'Total Products', value: stats.products, icon: '📦', link: '/admin/products' },
-    { title: 'Total Users',    value: stats.users,    icon: '👥', link: '/admin/users' },
-    { title: 'Total Banners',  value: stats.banners,  icon: '🖼️', link: '/admin/banners' },
+    { title: 'Total Products', value: stats.products,              icon: '📦', link: '/admin/products' },
+    { title: 'Total Users',    value: stats.users,                 icon: '👥', link: '/admin/users' },
+    { title: 'Total Banners',  value: stats.banners,               icon: '🖼️', link: '/admin/banners' },
+    { title: 'Total Orders',   value: stats.orders,                icon: '📋', link: '/admin/orders' },
+    { title: 'Revenue',        value: `₹${stats.revenue || 0}`,   icon: '💰', link: '/admin/orders' },
   ];
 
   return (

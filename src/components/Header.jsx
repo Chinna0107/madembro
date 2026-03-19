@@ -6,8 +6,8 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { getCartCount, isLoaded } = useCart();
-  const [cartCount, setCartCount] = useState(0);
+  const { cartItems } = useCart();
+  const cartCount = cartItems.length;
   const navigate = useNavigate();
   const mobileMenuRef = useRef(null);
   const menuBtnRef = useRef(null);
@@ -19,12 +19,6 @@ const Header = () => {
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(loggedIn);
   }, []);
-
-  useEffect(() => {
-    if (isLoaded) {
-      setCartCount(getCartCount());
-    }
-  }, [isLoaded, getCartCount]);
 
   useEffect(() => {
     const check = () => {
@@ -98,9 +92,9 @@ const Header = () => {
     shell: {
       display: "flex",
       alignItems: "center",
-      justifyContent: isMobile ? "flex-start" : "space-between",
+      justifyContent: isMobile ? "space-between" : "space-between",
       padding: isMobile ? "12px 16px" : "16px 40px",
-      gap: isMobile ? "16px" : "0"
+      gap: isMobile ? "0" : "0"
     },
 
     brand: {
@@ -109,7 +103,9 @@ const Header = () => {
       gap: isMobile ? "0" : "12px",
       cursor: "pointer",
       textDecoration: "none",
-      flex: isMobile ? "1" : "0",
+      position: isMobile ? "absolute" : "relative",
+      left: isMobile ? "33%" : "auto",
+      transform: isMobile ? "translateX(-50%)" : "none",
       justifyContent: isMobile ? "center" : "flex-start"
     },
 
@@ -140,7 +136,8 @@ const Header = () => {
       display: isMobile ? "none" : "flex",
       gap: "32px",
       fontWeight: "600",
-      alignItems: "center"
+      alignItems: "center",
+      marginLeft: "60px"
     },
 
     navLink: {
@@ -181,7 +178,7 @@ const Header = () => {
     },
 
     iconBtn: {
-      border: "none",
+      border: "1px solid #333",
       background: "#0a0a0a",
       padding: "10px",
       borderRadius: "50%",
@@ -195,7 +192,6 @@ const Header = () => {
       justifyContent: "center",
       width: "40px",
       height: "40px",
-      border: "1px solid #333"
     },
 
     cartBadge: {
@@ -216,7 +212,7 @@ const Header = () => {
     },
 
     userBtn: {
-      background: "linear-gradient(135deg, #d4af37, #e6c200)",
+      background: "#fff",
       border: "none",
       color: "#000",
       padding: "10px 16px",
@@ -309,7 +305,7 @@ const Header = () => {
 
     mobileCTA: {
       width: "100%",
-      background: "linear-gradient(135deg, #d4af37, #e6c200)",
+      background: "#fff",
       color: "#000",
       border: "none",
       padding: "12px",
@@ -368,7 +364,7 @@ const Header = () => {
 
         <a href="/" style={{ ...styles.brand, textDecoration: "none" }} onClick={closeMenu}>
           <img
-            src="https://res.cloudinary.com/dgyykbmt6/image/upload/v1773144048/md01_ailgiu.jpg"
+            src="https://res.cloudinary.com/dgyykbmt6/image/upload/v1773901975/WhatsApp_Image_2026-03-08_at_13.19.58-removebg-preview_gmwyqb.png"
             alt="Meda"
             style={styles.logo}
           />
@@ -483,7 +479,7 @@ const Header = () => {
               style={styles.userBtn}
               onMouseEnter={(e) => {
                 e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 6px 20px rgba(212, 175, 55, 0.3)";
+                e.target.style.boxShadow = "0 6px 20px rgba(255,255,255, 0.2)";
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = "translateY(0)";
