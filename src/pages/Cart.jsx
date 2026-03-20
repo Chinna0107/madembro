@@ -74,7 +74,7 @@ const Cart = () => {
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-2 mt-1">
                           <button
-                            onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
                             className="w-6 h-6 border border-gray-600 bg-gray-700 text-white rounded text-xs font-bold hover:bg-gray-600"
                           >
                             −
@@ -83,7 +83,7 @@ const Cart = () => {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
                             className="w-6 h-6 border border-gray-600 bg-gray-700 text-white rounded text-xs font-bold hover:bg-gray-600"
                           >
                             +
@@ -97,7 +97,7 @@ const Cart = () => {
 
                         {/* Remove Button */}
                         <button
-                          onClick={() => removeFromCart(item.id, item.size)}
+                          onClick={() => removeFromCart(item.id, item.size, item.color)}
                           className="w-full py-1 bg-red-700 text-white text-xs font-bold rounded hover:bg-red-800 transition-colors mt-1"
                         >
                           Remove
@@ -137,7 +137,7 @@ const Cart = () => {
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-3 justify-center">
                         <button
-                          onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
                           className="w-8 h-8 border border-gray-600 bg-gray-800 text-white rounded font-bold hover:bg-gray-700"
                         >
                           −
@@ -146,7 +146,7 @@ const Cart = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
                           className="w-8 h-8 border border-gray-600 bg-gray-800 text-white rounded font-bold hover:bg-gray-700"
                         >
                           +
@@ -162,7 +162,7 @@ const Cart = () => {
 
                       {/* Remove Button */}
                       <button
-                        onClick={() => removeFromCart(item.id, item.size)}
+                        onClick={() => removeFromCart(item.id, item.size, item.color)}
                         className="bg-red-700 text-white px-4 py-2 rounded font-bold hover:bg-red-800 transition-colors"
                       >
                         Remove

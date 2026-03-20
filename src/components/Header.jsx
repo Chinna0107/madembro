@@ -104,7 +104,7 @@ const Header = () => {
       cursor: "pointer",
       textDecoration: "none",
       position: isMobile ? "absolute" : "relative",
-      left: isMobile ? "33%" : "auto",
+      left: isMobile ? "45%" : "auto",
       transform: isMobile ? "translateX(-50%)" : "none",
       justifyContent: isMobile ? "center" : "flex-start"
     },
